@@ -1,0 +1,25 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:paddingBottom="5dp"
+    android:paddingLeft="3dp"
+    android:layout_height="wrap_content">
+
+    <CheckedTextView
+        android:id="@+id/check_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/image_view_file"
+        android:layout_marginTop="5.0dip"
+        android:checkMark="@drawable/select_image"
+        android:padding="5.0dip"
+        android:paddingBottom="0.0dip"
+        android:textAppearance="?android:textAppearanceLarge" />
+
+    <ImageView
+        android:id="@+id/image_view_file"
+        android:layout_width="fill_parent"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop" />
+</RelativeLayout>

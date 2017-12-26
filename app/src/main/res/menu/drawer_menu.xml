@@ -1,0 +1,52 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/top_drawer">
+        <item
+            android:id="@+id/menu_feed"
+            android:icon="@drawable/ic_global_menu_feed"
+            android:title="Trang chủ" />
+
+        <item
+            android:id="@+id/menu_chat_friend"
+            android:icon="@drawable/ic_global_menu_news"
+            android:title="Trò chuyện" />
+
+        <item
+            android:id="@+id/menu_photo_you_liked"
+            android:icon="@drawable/ic_global_menu_likes"
+            android:title="Bạn bè" />
+
+        <item
+            android:id="@+id/menu_change_profile"
+            android:icon="@drawable/ic_account_box"
+            android:title="Thay đổi thông tin" />
+    </group>
+
+    <group android:id="@+id/bottom_drawer">
+        <item
+            android:id="@+id/menu_about"
+            android:title="Cài đặt" />
+
+        <item
+            android:title="Phản hồi" />
+        <item
+            android:id="@+id/menu_signout"
+            android:icon="@drawable/nav_logout"
+            android:title="Đăng xuất" />
+    </group>
+
+    <group android:id="@+id/spacers">
+        <item
+            android:id="@+id/footer_spacer_1"
+            android:checkable="false"
+            android:enabled="false"
+            android:orderInCategory="200"
+            android:title="" />
+        <item
+            android:id="@+id/footer_spacer_2"
+            android:checkable="false"
+            android:enabled="false"
+            android:orderInCategory="200"
+            android:title="" />
+    </group>
+
+</menu>

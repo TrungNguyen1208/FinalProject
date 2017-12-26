@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">FinalProject</string>
+    <string name="waiting">Đang xử lý!</string>
+    <string name="yes">Đồng ý</string>
+    <string name="dismiss">Bỏ qua</string>
+    <string name="ok">Đồng ý</string>
+
+    <string name="user_profile_photo">https://andregriffiths.files.wordpress.com/2014/10/ivatar.jpg</string>
+    <string name="enter_group_name">Nhập tên nhóm</string>
+    <string name="hint_username">Nhập tên</string>
+
+    <string name="google_map_api_key">AIzaSyCBJniVtYVzPlzmHaln0jImVSNbNBc2Cr0</string>
+    <string name="google_map_api_key_polyline">AIzaSyA3cUC6tWZrQf3fCaolWfmZBt25UPBgaTc</string>
+</resources>

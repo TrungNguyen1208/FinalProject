@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#c01e1e</color>
+    <color name="colorPrimaryDark">#E12929</color>
+    <color name="colorAccent">#5C6BC0</color>
+
+    <color name="background_red">#cd2027</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorGray">#EEEEEE</color>
+    <color name="colorFacebook">#189aca</color>
+    <color name="while1">#FFFFFFFF</color>
+    <color name="red1">#CC0000</color>
+
+    <color name="traspanrentBackgroundLogin">#66000000</color>
+    <color name="background_gray">#ccc</color>
+    <color name="black_litte">#2a2828</color>
+    <color name="text_gray">#5a5858</color>
+    <color name="background_gray_litte">#e6e3e3</color>
+
+    <color name="btn_context_menu_normal">#ffffff</color>
+    <color name="btn_context_menu_pressed">#40000000</color>
+
+    <color name="colorIndivateTab">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="colorCardView">#f7f7f7</color>
+    <color name="user_detail_separator">#007787</color>
+
+    <color name="grey_200">#EEEEEE</color>
+    <color name="grey_500">#a4a4a4</color>
+    <color name="grey_100">#F5F5F5</color>
+    <color name="grey_800">#212121</color>
+
+    <color name="btn_send_normal">#02c754</color>
+    <color name="btn_send_pressed">#006633</color>
+
+    <color name="blue_grey_500">#607D8B</color>
+
+    <color name="yellow_400">#FFEE58</color>
+    <color name="yellow_700">#FFD600</color>
+
+</resources>
