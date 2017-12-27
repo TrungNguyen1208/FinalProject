@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,13 +79,6 @@ public class RequestFriendFragment extends BaseFragment implements SwipeRefreshL
                             @Override
                             public void onSuccess(Void aVoid) {
                                 makeToastSucces("Thêm bạn bè thành công");
-
-                                Intent intentAdd = new Intent(FriendsFragment.ACTION_ADD_FRIEND);
-                                intentAdd.putExtra("idFriend", friends.get(position).uid);
-                                intentAdd.putExtra("avata", friends.get(position).avata);
-                                intentAdd.putExtra("email", friends.get(position).email);
-                                intentAdd.putExtra("name", friends.get(position).name);
-                                getContext().sendBroadcast(intentAdd);
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -155,7 +147,7 @@ public class RequestFriendFragment extends BaseFragment implements SwipeRefreshL
                             user.name = (String) map.get("name");
                             user.email = (String) map.get("email");
                             user.uid = (String) map.get("uid");
-                            user.avata =  (String) map.get("avata");
+                            user.avata = (String) map.get("avata");
 
                             friends.add(user);
                             adapter.notifyDataSetChanged();
@@ -175,8 +167,16 @@ public class RequestFriendFragment extends BaseFragment implements SwipeRefreshL
                             String uid = (String) map.get("uid");
 
                             for (User author : friends) {
-                                if (author.uid != null && author.uid.equals(uid))
+                                if (author.uid != null && author.uid.equals(uid)) {
+                                    Intent intentAdd = new Intent(FriendsFragment.ACTION_ADD_FRIEND);
+                                    intentAdd.putExtra("idFriend", uid);
+                                    intentAdd.putExtra("avata", (String) map.get("avata"));
+                                    intentAdd.putExtra("email", (String) map.get("email"));
+                                    intentAdd.putExtra("name", (String) map.get("name"));
+                                    getContext().sendBroadcast(intentAdd);
+
                                     friends.remove(author);
+                                }
                             }
                             adapter.notifyDataSetChanged();
                             mSwipeRefreshLayout.setRefreshing(false);

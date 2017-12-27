@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.base.BaseFragment;
 import ptit.nttrung.finalproject.data.firebase.FirebaseUtil;
+import ptit.nttrung.finalproject.data.firebase.ServiceUtils;
 import ptit.nttrung.finalproject.data.local.FriendDB;
 import ptit.nttrung.finalproject.data.local.SharedPreferenceHelper;
 import ptit.nttrung.finalproject.data.local.StaticConfig;
@@ -59,8 +60,8 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
     private RecyclerView recyclerListFrends;
     private ListFriendsAdapter adapter;
     public FragFriendClickFloatButton onClickFloatButton;
-    private ListFriend dataListFriend = null;
-    private ArrayList<String> listFriendID = null;
+    private ListFriend dataListFriend = new ListFriend();
+    private ArrayList<String> listFriendID = new ArrayList<>();
     private LovelyProgressDialog dialogFindAllFriend;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private CountDownTimer detectFriendOnline;
@@ -77,6 +78,28 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        detectFriendOnline = new CountDownTimer(System.currentTimeMillis(), StaticConfig.TIME_TO_REFRESH) {
+            @Override
+            public void onTick(long l) {
+                ServiceUtils.updateFriendStatus(getContext(), dataListFriend);
+                ServiceUtils.updateUserStatus(getContext());
+            }
+
+            @Override
+            public void onFinish() {
+            }
+        };
+        if (dataListFriend == null) {
+            dataListFriend = FriendDB.getInstance(getContext()).getListFriend();
+            if (dataListFriend.getListFriend().size() > 0) {
+                listFriendID = new ArrayList<>();
+                for (Friend friend : dataListFriend.getListFriend()) {
+                    listFriendID.add(friend.id);
+                }
+                detectFriendOnline.start();
+            }
+        }
+
         View layout = inflater.inflate(R.layout.fragment_friends, container, false);
 
         tvNoFriend = (TextView) layout.findViewById(R.id.tv_no_friend);
@@ -91,57 +114,9 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
         recyclerListFrends.setAdapter(adapter);
         dialogFindAllFriend = new LovelyProgressDialog(getContext());
 
-        if (listFriendID == null) {
-            listFriendID = new ArrayList<>();
-            dialogFindAllFriend.setCancelable(false)
-                    .setIcon(R.drawable.ic_add_friend)
-                    .setTitle("Get all friend....")
-                    .setTopColorRes(R.color.colorAccent)
-                    .show();
-            getListFriendUId();
-        }
+        getListFriendUId();
 
-        addFriendRecevier = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String idFriend = intent.getExtras().getString("idFriend");
-                String name = intent.getExtras().getString("name");
-                String avata = intent.getExtras().getString("avata");
-                String email = intent.getExtras().getString("email");
-
-                if (listFriendID.contains(idFriend)) {
-                    new LovelyInfoDialog(context)
-                            .setTopColorRes(R.color.colorPrimary)
-                            .setIcon(R.drawable.ic_add_friend)
-                            .setTitle("Bạn bè")
-                            .setMessage("User " + email + " đã là bạn bè")
-                            .show();
-                } else {
-                    tvNoFriend.setVisibility(View.GONE);
-                    Friend user = new Friend();
-                    user.name = name;
-                    user.email = email;
-                    user.avata = avata;
-                    user.id = idFriend;
-
-                    String idRoom = idFriend.compareTo(StaticConfig.UID) > 0 ? (StaticConfig.UID + idFriend).hashCode() + "" : "" + (idFriend + StaticConfig.UID).hashCode();
-                    user.idRoom = idRoom;
-
-                    addFriend(idFriend, true);
-                    listFriendID.add(idFriend);
-                    dataListFriend.getListFriend().add(user);
-                    FriendDB.getInstance(getContext()).addFriend(user);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        };
-
-//        IntentFilter intentFilter = new IntentFilter(ACTION_DELETE_FRIEND);
-//        getContext().registerReceiver(deleteFriendReceiver, intentFilter);
-
-        IntentFilter intentFilterAddFr = new IntentFilter(ACTION_ADD_FRIEND);
-        getContext().registerReceiver(addFriendRecevier, intentFilterAddFr);
-
+        initRecevier();
         return layout;
     }
 
@@ -151,7 +126,7 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
         if (dataListFriend != null) dataListFriend.getListFriend().clear();
         adapter.notifyDataSetChanged();
         FriendDB.getInstance(getContext()).dropDB();
-//        detectFriendOnline.cancel();
+        detectFriendOnline.cancel();
         getListFriendUId();
     }
 
@@ -327,6 +302,11 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
      * Lay danh sach ban be tren server
      */
     private void getListFriendUId() {
+        dialogFindAllFriend.setCancelable(false)
+                .setIcon(R.drawable.ic_add_friend)
+                .setTitle("Get all friend....")
+                .setTopColorRes(R.color.colorAccent)
+                .show();
         FirebaseDatabase.getInstance().getReference().child("friend/" + StaticConfig.UID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -446,5 +426,49 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
         super.onDestroyView();
 //        getContext().unregisterReceiver(deleteFriendReceiver);
         getContext().unregisterReceiver(addFriendRecevier);
+    }
+
+    private void initRecevier() {
+        addFriendRecevier = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String idFriend = intent.getExtras().getString("idFriend");
+                String name = intent.getExtras().getString("name");
+                String avata = intent.getExtras().getString("avata");
+                String email = intent.getExtras().getString("email");
+
+                if (listFriendID.contains(idFriend)) {
+                    new LovelyInfoDialog(context)
+                            .setTopColorRes(R.color.colorPrimary)
+                            .setIcon(R.drawable.ic_add_friend)
+                            .setTitle("Bạn bè")
+                            .setMessage("User " + email + " đã là bạn bè")
+                            .show();
+                } else {
+                    tvNoFriend.setVisibility(View.GONE);
+                    Friend user = new Friend();
+                    user.name = name;
+                    user.email = email;
+                    user.avata = avata;
+                    user.id = idFriend;
+                    user.uid = idFriend;
+
+                    String idRoom = idFriend.compareTo(StaticConfig.UID) > 0 ? (StaticConfig.UID + idFriend).hashCode() + "" : "" + (idFriend + StaticConfig.UID).hashCode();
+                    user.idRoom = idRoom;
+
+                    addFriend(idFriend, true);
+                    listFriendID.add(idFriend);
+                    dataListFriend.getListFriend().add(user);
+                    FriendDB.getInstance(getContext()).addFriend(user);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        };
+
+//        IntentFilter intentFilter = new IntentFilter(ACTION_DELETE_FRIEND);
+//        getContext().registerReceiver(deleteFriendReceiver, intentFilter);
+
+        IntentFilter intentFilterAddFr = new IntentFilter(ACTION_ADD_FRIEND);
+        getContext().registerReceiver(addFriendRecevier, intentFilterAddFr);
     }
 }

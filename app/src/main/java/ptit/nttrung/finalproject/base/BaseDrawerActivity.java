@@ -119,9 +119,6 @@ public abstract class BaseDrawerActivity extends BaseActivity {
 
         ImageUtils.loadAvata(this,user.avata,ivMenuUserProfilePhoto);
 
-//        String avata = prefenceUserInfo.getUserInfo().getAvata();
-//        ImageUtils.loadAvata(getApplicationContext(), avata, ivMenuUserProfilePhoto);
-
 //        Picasso.with(this)
 //                .load(profilePhoto)
 //                .placeholder(R.drawable.default_avata)

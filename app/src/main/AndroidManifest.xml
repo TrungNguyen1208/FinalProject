@@ -24,13 +24,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_map_api_key" />
 
-
         <activity android:name=".ui.main.MainActivity" />
 
         <activity android:name=".ui.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -42,5 +40,10 @@
         <activity android:name=".ui.maps.MapsActivity" />
         <activity android:name=".ui.gallery.file.GalleryFileActivity" />
         <activity android:name=".ui.gallery.folder.GalleryFolderActivity" />
+
+        <service
+            android:name=".data.firebase.FriendChatService"
+            android:exported="false"
+            android:persistent="true" />
     </application>
 </manifest>

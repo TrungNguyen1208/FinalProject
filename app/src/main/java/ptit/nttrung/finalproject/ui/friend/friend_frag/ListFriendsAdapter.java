@@ -82,7 +82,7 @@ public class ListFriendsAdapter extends RecyclerView.Adapter<ListFriendsAdapter.
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final ArrayList<Friend> friends = listFriend.getListFriend();
         final String name = friends.get(position).name;
-        final String id = friends.get(position).id;
+        final String id = friends.get(position).uid;
         final String idRoom = friends.get(position).idRoom;
         final String avata = friends.get(position).avata;
 

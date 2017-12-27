@@ -33,7 +33,7 @@ public class SharedPreferenceHelper {
         editor.putString(SHARE_KEY_EMAIL, user.email);
         editor.putString(SHARE_KEY_AVATA, user.avata);
         editor.putString(SHARE_KEY_UID, StaticConfig.UID);
-        editor.apply();
+        editor.commit();
     }
 
     public User getUserInfo(){

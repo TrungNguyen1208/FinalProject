@@ -3,10 +3,17 @@ package ptit.nttrung.finalproject.ui.login;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import ptit.nttrung.finalproject.R;
+import ptit.nttrung.finalproject.data.local.StaticConfig;
+import ptit.nttrung.finalproject.ui.main.MainActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -16,6 +23,17 @@ public class LoginActivity extends AppCompatActivity {
     private static final String REGISTER_FRAGMENT = "REGISTER_FRAGMENT";
     private LoginFragment loginFragment;
     private RegisterFragment registerFragment;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser user;
+    private boolean firstTimeAccess;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +56,40 @@ public class LoginActivity extends AppCompatActivity {
             });
 
             showLoginFragment();
+        }
+
+        firstTimeAccess = true;
+        initFirebase();
+    }
+
+    private void initFirebase() {
+        //Khoi tao thanh phan de dang nhap, dang ky
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    StaticConfig.UID = user.getUid();
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    if (firstTimeAccess) {
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        LoginActivity.this.finish();
+                    }
+                } else {
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                firstTimeAccess = false;
+            }
+        };
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
         }
     }
 

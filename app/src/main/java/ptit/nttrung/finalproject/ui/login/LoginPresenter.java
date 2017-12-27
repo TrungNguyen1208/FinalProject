@@ -30,6 +30,7 @@ public class LoginPresenter extends Presenter<LoginView> {
 
     private Context context;
     private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener listener;
 
     public LoginPresenter(Context context) {
         this.context = context;

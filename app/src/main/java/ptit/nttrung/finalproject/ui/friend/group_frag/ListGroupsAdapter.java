@@ -2,7 +2,9 @@ package ptit.nttrung.finalproject.ui.friend.group_frag;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,13 +15,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.data.local.FriendDB;
+import ptit.nttrung.finalproject.data.local.StaticConfig;
 import ptit.nttrung.finalproject.model.entity.Group;
 import ptit.nttrung.finalproject.model.entity.ListFriend;
+import ptit.nttrung.finalproject.ui.chat.ChatActivity;
 
 
 /**
@@ -65,25 +70,25 @@ public class ListGroupsAdapter extends RecyclerView.Adapter<ListGroupsAdapter.Vi
                 if (listFriend == null) {
                     listFriend = FriendDB.getInstance(context).getListFriend();
                 }
-//                Intent intent = new Intent(context, ChatActivity.class);
-//                intent.putExtra(StaticConfig.INTENT_KEY_CHAT_FRIEND, groupName);
-//                ArrayList<CharSequence> idFriend = new ArrayList<>();
-//                ChatActivity.bitmapAvataFriend = new HashMap<>();
-//                for (String id : listGroup.get(position).member) {
-//                    idFriend.add(id);
-//                    String avata = listFriend.getAvataById(id);
-//                    if (!avata.equals(StaticConfig.STR_DEFAULT_BASE64)) {
-//                        byte[] decodedString = Base64.decode(avata, Base64.DEFAULT);
-//                        ChatActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
-//                    } else if (avata.equals(StaticConfig.STR_DEFAULT_BASE64)) {
-//                        ChatActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avata));
-//                    } else {
-//                        ChatActivity.bitmapAvataFriend.put(id, null);
-//                    }
-//                }
-//                intent.putCharSequenceArrayListExtra(StaticConfig.INTENT_KEY_CHAT_ID, idFriend);
-//                intent.putExtra(StaticConfig.INTENT_KEY_CHAT_ROOM_ID, listGroup.get(position).id);
-//                context.startActivity(intent);
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra(StaticConfig.INTENT_KEY_CHAT_FRIEND, groupName);
+                ArrayList<CharSequence> idFriend = new ArrayList<>();
+                ChatActivity.bitmapAvataFriend = new HashMap<>();
+                for (String id : listGroup.get(position).member) {
+                    idFriend.add(id);
+                    String avata = listFriend.getAvataById(id);
+                    if (!avata.equals(StaticConfig.STR_DEFAULT_BASE64)) {
+                        byte[] decodedString = Base64.decode(avata, Base64.DEFAULT);
+                        ChatActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
+                    } else if (avata.equals(StaticConfig.STR_DEFAULT_BASE64)) {
+                        ChatActivity.bitmapAvataFriend.put(id, BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avata));
+                    } else {
+                        ChatActivity.bitmapAvataFriend.put(id, null);
+                    }
+                }
+                intent.putCharSequenceArrayListExtra(StaticConfig.INTENT_KEY_CHAT_ID, idFriend);
+                intent.putExtra(StaticConfig.INTENT_KEY_CHAT_ROOM_ID, listGroup.get(position).id);
+                context.startActivity(intent);
             }
         });
     }
@@ -119,6 +124,4 @@ public class ListGroupsAdapter extends RecyclerView.Adapter<ListGroupsAdapter.Vi
             menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_LEAVE, Menu.NONE, "Leave group").setIntent(data);
         }
     }
-
-
 }
