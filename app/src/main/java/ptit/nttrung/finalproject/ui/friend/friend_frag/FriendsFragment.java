@@ -52,7 +52,7 @@ import ptit.nttrung.finalproject.model.entity.User;
  */
 
 
-public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, FriendsView {
 
     public static final String ACTION_DELETE_FRIEND = "com.android.ptit.DELETE_FRIEND";
     public static final String ACTION_ADD_FRIEND = "com.android.ptit.ADD_FRIEND";
@@ -62,10 +62,10 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
     public FragFriendClickFloatButton onClickFloatButton;
     private ListFriend dataListFriend = new ListFriend();
     private ArrayList<String> listFriendID = new ArrayList<>();
-    private LovelyProgressDialog dialogFindAllFriend;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private CountDownTimer detectFriendOnline;
     public static int ACTION_START_CHAT = 1;
+    private FriendsPresenter presenter;
 
     private TextView tvNoFriend;
 
@@ -112,11 +112,14 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
         mSwipeRefreshLayout.setOnRefreshListener(this);
         adapter = new ListFriendsAdapter(getContext(), dataListFriend, this);
         recyclerListFrends.setAdapter(adapter);
-        dialogFindAllFriend = new LovelyProgressDialog(getContext());
-
-        getListFriendUId();
 
         initRecevier();
+
+        presenter = new FriendsPresenter(getContext());
+        presenter.attachView(this);
+        presenter.getListFriendUId();
+
+
         return layout;
     }
 
@@ -127,7 +130,25 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
         adapter.notifyDataSetChanged();
         FriendDB.getInstance(getContext()).dropDB();
         detectFriendOnline.cancel();
-        getListFriendUId();
+        presenter.getListFriendUId();
+
+    }
+
+    @Override
+    public void showListFriendUId(DataSnapshot dataSnapshot) {
+        if (dataSnapshot.getValue() != null) {
+            HashMap mapRecord = (HashMap) dataSnapshot.getValue();
+            Iterator listKey = mapRecord.keySet().iterator();
+            while (listKey.hasNext()) {
+                String key = listKey.next().toString();
+                listFriendID.add(mapRecord.get(key).toString());
+            }
+            tvNoFriend.setVisibility(View.GONE);
+            getAllFriendInfo(0);
+        } else {
+            hideProgressDialog();
+            tvNoFriend.setVisibility(View.VISIBLE);
+        }
     }
 
     public class FragFriendClickFloatButton implements View.OnClickListener {
@@ -299,46 +320,13 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
     }
 
     /**
-     * Lay danh sach ban be tren server
-     */
-    private void getListFriendUId() {
-        dialogFindAllFriend.setCancelable(false)
-                .setIcon(R.drawable.ic_add_friend)
-                .setTitle("Get all friend....")
-                .setTopColorRes(R.color.colorAccent)
-                .show();
-        FirebaseDatabase.getInstance().getReference().child("friend/" + StaticConfig.UID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null) {
-                    HashMap mapRecord = (HashMap) dataSnapshot.getValue();
-                    Iterator listKey = mapRecord.keySet().iterator();
-                    while (listKey.hasNext()) {
-                        String key = listKey.next().toString();
-                        listFriendID.add(mapRecord.get(key).toString());
-                    }
-                    tvNoFriend.setVisibility(View.GONE);
-                    getAllFriendInfo(0);
-                } else {
-                    dialogFindAllFriend.dismiss();
-                    tvNoFriend.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-    }
-
-    /**
      * Truy cap bang user lay thong tin id nguoi dung
      */
     private void getAllFriendInfo(final int index) {
         if (index == listFriendID.size()) {
             //save list friend
             adapter.notifyDataSetChanged();
-            dialogFindAllFriend.dismiss();
+            hideProgressDialog();
             mSwipeRefreshLayout.setRefreshing(false);
             detectFriendOnline.start();
         } else {
@@ -364,7 +352,7 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    hideProgressDialog();
                 }
             });
         }
@@ -388,7 +376,6 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 makeToastError("Có lỗi! Không thể kết bạn!");
-                                Log.e("Add Friend", e.getMessage());
                             }
                         });
             } else {
@@ -407,7 +394,6 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 makeToastError("Có lỗi! Không thể kết bạn!");
-                                Log.e("Add Friend", e.getMessage());
                             }
                         });
             }
@@ -424,8 +410,9 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        getContext().unregisterReceiver(deleteFriendReceiver);
+        getContext().unregisterReceiver(deleteFriendReceiver);
         getContext().unregisterReceiver(addFriendRecevier);
+        presenter.detachView();
     }
 
     private void initRecevier() {
@@ -465,8 +452,24 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
             }
         };
 
-//        IntentFilter intentFilter = new IntentFilter(ACTION_DELETE_FRIEND);
-//        getContext().registerReceiver(deleteFriendReceiver, intentFilter);
+        deleteFriendReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String idDeleted = intent.getExtras().getString("idFriend");
+                for (Friend friend : dataListFriend.getListFriend()) {
+                    if (idDeleted.equals(friend.id)) {
+                        ArrayList<Friend> friends = dataListFriend.getListFriend();
+                        FriendDB.getInstance(getContext()).deleteFriend(friend);
+                        friends.remove(friend);
+                        break;
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+        };
+
+        IntentFilter intentFilter = new IntentFilter(ACTION_DELETE_FRIEND);
+        getContext().registerReceiver(deleteFriendReceiver, intentFilter);
 
         IntentFilter intentFilterAddFr = new IntentFilter(ACTION_ADD_FRIEND);
         getContext().registerReceiver(addFriendRecevier, intentFilterAddFr);

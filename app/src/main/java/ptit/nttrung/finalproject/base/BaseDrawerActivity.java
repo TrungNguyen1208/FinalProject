@@ -55,7 +55,6 @@ public abstract class BaseDrawerActivity extends BaseActivity {
         ViewGroup viewGroup = (ViewGroup) findViewById(R.id.flContentRoot);
         LayoutInflater.from(this).inflate(layoutResID, viewGroup, true);
 
-        // Initialize authentication and set up callbacks
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -112,20 +111,11 @@ public abstract class BaseDrawerActivity extends BaseActivity {
             }
         });
 
-        User user = SharedPreferenceHelper.getInstance(this).getUserInfo();
-        if (user.name !=null){
-            ivMenuUserName.setText(user.name);
-        }
+        User userInfo = SharedPreferenceHelper.getInstance(this).getUserInfo();
+        if (userInfo.name != null)
+            ivMenuUserName.setText(userInfo.name);
+        ImageUtils.loadAvata(BaseDrawerActivity.this, userInfo.avata, ivMenuUserProfilePhoto);
 
-        ImageUtils.loadAvata(this,user.avata,ivMenuUserProfilePhoto);
-
-//        Picasso.with(this)
-//                .load(profilePhoto)
-//                .placeholder(R.drawable.default_avata)
-//                .resize(avatarSize, avatarSize)
-//                .centerCrop()
-//                .transform(new CircleTransformation())
-//                .into(ivMenuUserProfilePhoto);
     }
 
     public void onGlobalMenuHeaderClick(final View v) {

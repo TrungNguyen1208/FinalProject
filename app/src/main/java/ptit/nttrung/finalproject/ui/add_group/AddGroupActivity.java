@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -25,7 +27,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ptit.nttrung.finalproject.R;
-import ptit.nttrung.finalproject.base.BaseActivity;
 import ptit.nttrung.finalproject.data.local.FriendDB;
 import ptit.nttrung.finalproject.data.local.GroupDB;
 import ptit.nttrung.finalproject.data.local.StaticConfig;
@@ -37,7 +38,7 @@ import ptit.nttrung.finalproject.model.entity.Room;
  * Created by TrungNguyen on 12/17/2017.
  */
 
-public class AddGroupActivity extends BaseActivity {
+public class AddGroupActivity extends AppCompatActivity {
 
     private RecyclerView recyclerListFriend;
     private ListPeopleAdapter adapter;
@@ -67,7 +68,6 @@ public class AddGroupActivity extends BaseActivity {
         editTextGroupName = (EditText) findViewById(R.id.editGroupName);
         txtGroupIcon = (TextView) findViewById(R.id.icon_group);
         dialogWait = new LovelyProgressDialog(this).setCancelable(false);
-
         editTextGroupName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -92,8 +92,9 @@ public class AddGroupActivity extends BaseActivity {
         btnAddGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.e("listIDChoose", String.valueOf(listIDChoose.size()));
                 if (listIDChoose.size() < 3) {
-                    Toast.makeText(AddGroupActivity.this, "Cần ít nhất 3 thành viên", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddGroupActivity.this, "Cần ít nhất 2 người để tạo nhóm trò chuyện", Toast.LENGTH_SHORT).show();
                 } else {
                     if (editTextGroupName.getText().length() == 0) {
                         Toast.makeText(AddGroupActivity.this, "Nhập tên nhóm", Toast.LENGTH_SHORT).show();
@@ -111,8 +112,8 @@ public class AddGroupActivity extends BaseActivity {
         if (intentData.getStringExtra("groupId") != null) {
             isEditGroup = true;
             String idGroup = intentData.getStringExtra("groupId");
-            txtActionName.setText("Lưu");
-            btnAddGroup.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            txtActionName.setText("Save");
+            btnAddGroup.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             groupEdit = GroupDB.getInstance(this).getGroup(idGroup);
             editTextGroupName.setText(groupEdit.groupInfo.get("name"));
         } else {
@@ -125,33 +126,11 @@ public class AddGroupActivity extends BaseActivity {
         recyclerListFriend.setAdapter(adapter);
     }
 
-    private void createGroup() {
-        //Show dialog wait
-        dialogWait.setIcon(R.drawable.ic_add_group_dialog)
-                .setTitle("Đang xử lý...")
-                .setTopColorRes(R.color.colorAccent)
-                .show();
-
-        final String idGroup = (StaticConfig.UID + System.currentTimeMillis()).hashCode() + "";
-        Room room = new Room();
-        for (String id : listIDChoose) {
-            room.member.add(id);
-        }
-        room.groupInfo.put("name", editTextGroupName.getText().toString());
-        room.groupInfo.put("admin", StaticConfig.UID);
-        FirebaseDatabase.getInstance().getReference().child("group/" + idGroup).setValue(room).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                addRoomForUser(idGroup, 0);
-            }
-        });
-    }
-
     private void editGroup() {
         //Show dialog wait
         dialogWait.setIcon(R.drawable.ic_add_group_dialog)
-                .setTitle("Đang xử lý....")
-                .setTopColorRes(R.color.colorAccent)
+                .setTitle("Editing....")
+                .setTopColorRes(R.color.colorPrimary)
                 .show();
         //Delete group
         final String idGroup = groupEdit.id;
@@ -196,10 +175,31 @@ public class AddGroupActivity extends BaseActivity {
         ;
     }
 
+    private void createGroup() {
+        dialogWait.setIcon(R.drawable.ic_add_group_dialog)
+                .setTitle("Registering....")
+                .setTopColorRes(R.color.colorPrimary)
+                .show();
+
+        final String idGroup = (StaticConfig.UID + System.currentTimeMillis()).hashCode() + "";
+        Room room = new Room();
+        for (String id : listIDChoose) {
+            room.member.add(id);
+        }
+        room.groupInfo.put("name", editTextGroupName.getText().toString());
+        room.groupInfo.put("admin", StaticConfig.UID);
+        FirebaseDatabase.getInstance().getReference().child("group/" + idGroup).setValue(room).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                addRoomForUser(idGroup, 0);
+            }
+        });
+    }
+
     private void deleteRoomForUser(final String roomId, final int userIndex) {
         if (userIndex == listIDRemove.size()) {
             dialogWait.dismiss();
-            makeToastSucces("Chỉnh sửa thành công");
+            Toast.makeText(this, "Edit group success", Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK, null);
             AddGroupActivity.this.finish();
         } else {
@@ -242,7 +242,7 @@ public class AddGroupActivity extends BaseActivity {
         if (userIndex == listIDChoose.size()) {
             if (!isEditGroup) {
                 dialogWait.dismiss();
-                makeToastSucces("Tạo nhóm thành công");
+                Toast.makeText(this, "Tạo nhóm thành công", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK, null);
                 AddGroupActivity.this.finish();
             } else {

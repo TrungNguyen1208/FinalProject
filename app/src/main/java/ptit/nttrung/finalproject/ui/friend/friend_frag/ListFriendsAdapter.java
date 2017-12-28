@@ -122,13 +122,13 @@ public class ListFriendsAdapter extends RecyclerView.Adapter<ListFriendsAdapter.
                         String friendName = (String) holder.txtName.getText();
 
                         new AlertDialog.Builder(context)
-                                .setTitle("Delete Friend")
-                                .setMessage("Are you sure want to delete " + friendName + "?")
+                                .setTitle("Xóa bạn bè")
+                                .setMessage("Bạn thực sự muốn xóa " + friendName + " khỏi danh sách bạn bè?")
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         dialogInterface.dismiss();
-                                        final String idFriendRemoval = listFriend.getListFriend().get(position).id;
+                                        final String idFriendRemoval = listFriend.getListFriend().get(position).uid;
                                         dialogWaitDeleting.setTitle("Deleting...")
                                                 .setCancelable(false)
                                                 .setTopColorRes(R.color.colorAccent)
@@ -185,7 +185,11 @@ public class ListFriendsAdapter extends RecyclerView.Adapter<ListFriendsAdapter.
                             if (!mapMark.get(id)) {
                                 listFriend.getListFriend().get(position).message.text = (id + mapMessage.get("text"));
                             } else {
-                                listFriend.getListFriend().get(position).message.text = ((String) mapMessage.get("text"));
+                                try {
+                                    listFriend.getListFriend().get(position).message.text = ((String) mapMessage.get("text"));
+                                } catch (Exception e) {
+
+                                }
                             }
                             notifyDataSetChanged();
                             mapMark.put(id, false);
@@ -321,13 +325,14 @@ public class ListFriendsAdapter extends RecyclerView.Adapter<ListFriendsAdapter.
                         dialogWaitDeleting.dismiss();
                         new LovelyInfoDialog(context)
                                 .setTopColorRes(R.color.colorAccent)
-                                .setTitle("Error")
-                                .setMessage("Error occurred during deleting friend")
+                                .setTitle("Lỗi")
+                                .setMessage("Không tìm thấy email trong danh sách bạn bè")
                                 .show();
                     } else {
                         final String idRemoval = ((HashMap) dataSnapshot.getValue()).keySet().iterator().next().toString();
                         FirebaseUtil.getFriendRef().child(StaticConfig.UID)
-                                .child(idRemoval).removeValue()
+                                .child(idRemoval)
+                                .removeValue()
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
@@ -339,21 +344,35 @@ public class ListFriendsAdapter extends RecyclerView.Adapter<ListFriendsAdapter.
                                                 .setMessage("Friend deleting successfully")
                                                 .show();
 
-                                        FirebaseUtil.getFriendRef().child(idRemoval)
-                                                .child(StaticConfig.UID).removeValue();
-
                                         Intent intentDeleted = new Intent(FriendsFragment.ACTION_DELETE_FRIEND);
                                         intentDeleted.putExtra("idFriend", idFriend);
                                         context.sendBroadcast(intentDeleted);
+
+                                        FirebaseUtil.getFriendRef().child(idFriend)
+                                                .orderByValue().equalTo(StaticConfig.UID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot != null) {
+                                                    final String idRemoval = ((HashMap) dataSnapshot.getValue()).keySet().iterator().next().toString();
+                                                    FirebaseUtil.getFriendRef().child(idFriend).child(idRemoval).removeValue();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
+                                        Log.e("Delete friend", e.getMessage());
                                         dialogWaitDeleting.dismiss();
                                         new LovelyInfoDialog(context)
                                                 .setTopColorRes(R.color.colorAccent)
-                                                .setTitle("Error")
+                                                .setTitle("Lỗi")
                                                 .setMessage("Error occurred during deleting friend")
                                                 .show();
                                     }

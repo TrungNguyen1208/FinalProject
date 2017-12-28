@@ -63,7 +63,6 @@ public class LoginPresenter extends Presenter<LoginView> {
                             FirebaseUser user = mAuth.getCurrentUser();
                             StaticConfig.UID = user.getUid();
                             saveUserInfo();
-                            getView().startMainActivity();
                         } else {
                             getView().makeToastError("Sai email hoặc mật khẩu!");
                         }
@@ -105,20 +104,22 @@ public class LoginPresenter extends Presenter<LoginView> {
     private void saveUserInfo() {
         FirebaseDatabase.getInstance().getReference().child("user/" + StaticConfig.UID)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap hashUser = (HashMap) dataSnapshot.getValue();
-                User userInfo = new User();
-                userInfo.name = (String) hashUser.get("name");
-                userInfo.email = (String) hashUser.get("email");
-                userInfo.avata = (String) hashUser.get("avata");
-                SharedPreferenceHelper.getInstance(context).saveUserInfo(userInfo);
-            }
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        HashMap hashUser = (HashMap) dataSnapshot.getValue();
+                        User userInfo = new User();
+                        userInfo.uid = StaticConfig.UID;
+                        userInfo.name = (String) hashUser.get("name");
+                        userInfo.email = (String) hashUser.get("email");
+                        userInfo.avata = (String) hashUser.get("avata");
+                        SharedPreferenceHelper.getInstance(context).saveUserInfo(userInfo);
+                        getView().startMainActivity();
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                    }
+                });
     }
 }

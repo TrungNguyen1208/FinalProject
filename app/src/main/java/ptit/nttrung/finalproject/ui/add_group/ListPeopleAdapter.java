@@ -14,12 +14,9 @@ import android.widget.TextView;
 
 import java.util.Set;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.data.local.StaticConfig;
-import ptit.nttrung.finalproject.model.entity.Friend;
 import ptit.nttrung.finalproject.model.entity.Group;
 import ptit.nttrung.finalproject.model.entity.ListFriend;
 
@@ -28,7 +25,7 @@ import ptit.nttrung.finalproject.model.entity.ListFriend;
  * Created by TrungNguyen on 9/26/2017.
  */
 
-public class ListPeopleAdapter extends RecyclerView.Adapter<ListPeopleAdapter.ViewHolder> {
+public class ListPeopleAdapter extends RecyclerView.Adapter<ListPeopleAdapter.ItemFriendHolder> {
 
     private Context context;
     private ListFriend listFriend;
@@ -50,27 +47,24 @@ public class ListPeopleAdapter extends RecyclerView.Adapter<ListPeopleAdapter.Vi
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemFriendHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_add_friend, parent, false);
-        return new ViewHolder(view);
+        return new ItemFriendHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Friend friend = listFriend.getListFriend().get(position);
-        holder.txtName.setText(friend.name);
-        holder.txtEmail.setText(friend.email);
-
-        String avata = friend.avata;
-        final String id = friend.id;
+    public void onBindViewHolder(ItemFriendHolder holder, int position) {
+        ((ItemFriendHolder) holder).txtName.setText(listFriend.getListFriend().get(position).name);
+        ((ItemFriendHolder) holder).txtEmail.setText(listFriend.getListFriend().get(position).email);
+        String avata = listFriend.getListFriend().get(position).avata;
+        final String id = listFriend.getListFriend().get(position).uid;
         if (!avata.equals(StaticConfig.STR_DEFAULT_BASE64)) {
             byte[] decodedString = Base64.decode(avata, Base64.DEFAULT);
-            holder.avata.setImageBitmap(BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
+            ((ItemFriendHolder) holder).avata.setImageBitmap(BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
         } else {
-            holder.avata.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avata));
+            ((ItemFriendHolder) holder).avata.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avata));
         }
-
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        ((ItemFriendHolder) holder).checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
@@ -88,9 +82,9 @@ public class ListPeopleAdapter extends RecyclerView.Adapter<ListPeopleAdapter.Vi
             }
         });
         if (isEdit && editGroup.member.contains(id)) {
-            holder.checkBox.setChecked(true);
+            ((ItemFriendHolder) holder).checkBox.setChecked(true);
         } else if (editGroup != null && !editGroup.member.contains(id)) {
-            holder.checkBox.setChecked(false);
+            ((ItemFriendHolder) holder).checkBox.setChecked(false);
         }
     }
 
@@ -100,20 +94,17 @@ public class ListPeopleAdapter extends RecyclerView.Adapter<ListPeopleAdapter.Vi
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ItemFriendHolder extends RecyclerView.ViewHolder {
+        public TextView txtName, txtEmail;
+        public CircleImageView avata;
+        public CheckBox checkBox;
 
-        @BindView(R.id.icon_avata)
-        CircleImageView avata;
-        @BindView(R.id.txtName)
-        TextView txtName;
-        @BindView(R.id.txtEmail)
-        TextView txtEmail;
-        @BindView(R.id.checkAddPeople)
-        CheckBox checkBox;
-
-        public ViewHolder(View itemView) {
+        public ItemFriendHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            txtName = (TextView) itemView.findViewById(R.id.txtName);
+            txtEmail = (TextView) itemView.findViewById(R.id.txtEmail);
+            avata = (CircleImageView) itemView.findViewById(R.id.icon_avata);
+            checkBox = (CheckBox) itemView.findViewById(R.id.checkAddPeople);
         }
     }
 }

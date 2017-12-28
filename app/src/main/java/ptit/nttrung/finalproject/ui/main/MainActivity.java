@@ -53,6 +53,9 @@ public class MainActivity extends BaseDrawerActivity {
                     case R.id.menu_signout:
                         ActivityUtils.signOutConfirmation(MainActivity.this);
                         break;
+                    case R.id.feed_back:
+                        ActivityUtils.sendFeedBack(MainActivity.this);
+                        break;
                     default:
                         break;
                 }

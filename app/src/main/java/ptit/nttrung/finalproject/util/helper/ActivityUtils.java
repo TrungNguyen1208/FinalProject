@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -165,6 +166,15 @@ public class ActivityUtils {
                     }
                 })
                 .setNegativeButton(android.R.string.no, null).show();
+    }
+
+    public static void sendFeedBack(Context context) {
+        Intent email = new Intent(Intent.ACTION_SEND);
+        email.putExtra(Intent.EXTRA_EMAIL, new String[]{"thanhtrungnguyen1208@gmail.com"});
+        email.putExtra(Intent.EXTRA_SUBJECT, "subject");
+        email.putExtra(Intent.EXTRA_TEXT, "message");
+        email.setType("message/rfc822");
+        context.startActivity(Intent.createChooser(email, "Choose an Email client :"));
     }
 
 }

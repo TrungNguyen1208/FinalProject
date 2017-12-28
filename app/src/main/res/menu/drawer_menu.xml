@@ -27,6 +27,7 @@
             android:title="Cài đặt" />
 
         <item
+            android:id="@+id/feed_back"
             android:title="Phản hồi" />
         <item
             android:id="@+id/menu_signout"

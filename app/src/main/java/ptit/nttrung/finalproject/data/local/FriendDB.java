@@ -34,13 +34,22 @@ public final class FriendDB {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(FeedEntry.COLUMN_NAME_ID, friend.id);
+        if (friend.id != null) {
+            values.put(FeedEntry.COLUMN_NAME_ID, friend.id);
+        } else {
+            values.put(FeedEntry.COLUMN_NAME_ID, friend.uid);
+        }
         values.put(FeedEntry.COLUMN_NAME_NAME, friend.name);
         values.put(FeedEntry.COLUMN_NAME_EMAIL, friend.email);
         values.put(FeedEntry.COLUMN_NAME_ID_ROOM, friend.idRoom);
         values.put(FeedEntry.COLUMN_NAME_AVATA, friend.avata);
         // Insert the new row, returning the primary key value of the new row
         return db.insert(FeedEntry.TABLE_NAME, null, values);
+    }
+
+    public void deleteFriend(Friend friend) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.delete(FeedEntry.TABLE_NAME, FeedEntry.COLUMN_NAME_ID + " = ?", new String[]{friend.id});
     }
 
 
@@ -57,12 +66,16 @@ public final class FriendDB {
             Cursor cursor = db.rawQuery("select * from " + FeedEntry.TABLE_NAME, null);
             while (cursor.moveToNext()) {
                 Friend friend = new Friend();
+                friend.uid = cursor.getString(0);
                 friend.id = cursor.getString(0);
                 friend.name = cursor.getString(1);
                 friend.email = cursor.getString(2);
                 friend.idRoom = cursor.getString(3);
                 friend.avata = cursor.getString(4);
-                listFriend.getListFriend().add(friend);
+
+                if (friend.id != null) {
+                    listFriend.getListFriend().add(friend);
+                }
             }
             cursor.close();
         } catch (Exception e) {

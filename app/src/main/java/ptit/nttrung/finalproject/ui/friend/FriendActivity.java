@@ -77,6 +77,9 @@ public class FriendActivity extends BaseDrawerActivity {
                     case R.id.menu_signout:
                         ActivityUtils.signOutConfirmation(FriendActivity.this);
                         break;
+                    case R.id.feed_back:
+                        ActivityUtils.sendFeedBack(FriendActivity.this);
+                        break;
                     default:
                         break;
                 }

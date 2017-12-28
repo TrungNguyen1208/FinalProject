@@ -61,6 +61,9 @@ public class ProfileActivity extends BaseDrawerActivity {
                     case R.id.menu_signout:
                         ActivityUtils.signOutConfirmation(ProfileActivity.this);
                         break;
+                    case R.id.feed_back:
+                        ActivityUtils.sendFeedBack(ProfileActivity.this);
+                        break;
                     default:
                         break;
                 }
