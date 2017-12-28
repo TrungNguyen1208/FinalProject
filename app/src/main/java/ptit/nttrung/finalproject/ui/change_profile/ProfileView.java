@@ -8,9 +8,6 @@ import ptit.nttrung.finalproject.base.BaseView;
 import ptit.nttrung.finalproject.model.entity.Configuration;
 import ptit.nttrung.finalproject.model.entity.User;
 
-/**
- * Created by TrungNguyen on 12/25/2017.
- */
 
 public interface ProfileView extends BaseView {
     void setAdapterData(List<Configuration> configurations);

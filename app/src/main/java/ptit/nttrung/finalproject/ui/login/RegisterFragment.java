@@ -17,10 +17,6 @@ import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.base.BaseFragment;
 import ptit.nttrung.finalproject.util.helper.ActivityUtils;
 
-/**
- * Created by TrungNguyen on 12/4/2017.
- */
-
 public class RegisterFragment extends BaseFragment implements RegisterView{
 
     @BindView(R.id.edit_email_register)

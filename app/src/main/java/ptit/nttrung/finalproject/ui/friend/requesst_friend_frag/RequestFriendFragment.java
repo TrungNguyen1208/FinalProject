@@ -2,7 +2,6 @@ package ptit.nttrung.finalproject.ui.friend.requesst_friend_frag;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,11 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,14 +22,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.base.BaseFragment;
-import ptit.nttrung.finalproject.data.firebase.FirebaseUtil;
-import ptit.nttrung.finalproject.data.local.StaticConfig;
 import ptit.nttrung.finalproject.model.entity.User;
 import ptit.nttrung.finalproject.ui.friend.friend_frag.FriendsFragment;
-
-/**
- * Created by TrungNguyen on 12/17/2017.
- */
 
 public class RequestFriendFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, FriendRequestView {
 
@@ -47,15 +36,10 @@ public class RequestFriendFragment extends BaseFragment implements SwipeRefreshL
     @BindView(R.id.tv_no_friend)
     TextView tvNoFriend;
 
-    Unbinder unbinder;
-
+    private Unbinder unbinder;
     private List<User> friends = new ArrayList<>();
+    private FriendRequestPresenter presenter;
     private FriendRequestAdapter adapter;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Nullable
     @Override
@@ -68,44 +52,18 @@ public class RequestFriendFragment extends BaseFragment implements SwipeRefreshL
         adapter = new FriendRequestAdapter(getContext(), friends);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
+        presenter = new FriendRequestPresenter();
+        presenter.attachView(this);
+
         adapter.setOnItemClick(new FriendRequestAdapter.OnItemClick() {
             @Override
             public void onAcceptClick(final int position) {
-                FirebaseUtil.getRequestFriendRef()
-                        .child(StaticConfig.UID)
-                        .child(friends.get(position).uid)
-                        .removeValue()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                makeToastSucces("Thêm bạn bè thành công");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                makeToastError("Có lỗi xảy ra!");
-                            }
-                        });
+                presenter.onAccecptFriendClick(friends.get(position).uid);
             }
 
             @Override
             public void onDeniedClick(final int position) {
-                FirebaseUtil.getRequestFriendRef()
-                        .child(StaticConfig.UID)
-                        .child(friends.get(position).uid)
-                        .removeValue()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                makeToastSucces("Từ chối!");
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        makeToastError("Có lỗi xảy ra!");
-                    }
-                });
+                presenter.onDeniedRequestClick(friends.get(position).uid);
             }
 
             @Override
@@ -117,7 +75,7 @@ public class RequestFriendFragment extends BaseFragment implements SwipeRefreshL
         });
         rvFriendRequest.setAdapter(adapter);
 
-        getRequestFriend();
+        presenter.getAllFriendRequest();
 
         return view;
     }
@@ -126,72 +84,53 @@ public class RequestFriendFragment extends BaseFragment implements SwipeRefreshL
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        presenter.detachView();
     }
 
     @Override
     public void onRefresh() {
         friends.clear();
         adapter.notifyDataSetChanged();
-        getRequestFriend();
+        presenter.getAllFriendRequest();
     }
 
-    public void getRequestFriend() {
-        FirebaseUtil.getRequestFriendRef().child(StaticConfig.UID)
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        if (getActivity() != null && dataSnapshot.getValue() != null) {
-                            HashMap map = (HashMap) dataSnapshot.getValue();
+    @Override
+    public void onAddRequestSuccess(DataSnapshot dataSnapshot) {
+        if (getActivity() != null && dataSnapshot.getValue() != null) {
+            HashMap map = (HashMap) dataSnapshot.getValue();
 
-                            User user = new User();
-                            user.name = (String) map.get("name");
-                            user.email = (String) map.get("email");
-                            user.uid = (String) map.get("uid");
-                            user.avata = (String) map.get("avata");
+            User user = new User();
+            user.name = (String) map.get("name");
+            user.email = (String) map.get("email");
+            user.uid = (String) map.get("uid");
+            user.avata = (String) map.get("avata");
 
-                            friends.add(user);
-                            adapter.notifyDataSetChanged();
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    }
+            friends.add(user);
+            adapter.notifyDataSetChanged();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    }
 
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+    @Override
+    public void onDeniedRequestSuccess(DataSnapshot dataSnapshot) {
+        if (getActivity() != null && dataSnapshot.getValue() != null) {
+            HashMap map = (HashMap) dataSnapshot.getValue();
+            String uid = (String) map.get("uid");
 
-                    }
+            for (User author : friends) {
+                if (author.uid != null && author.uid.equals(uid)) {
+                    Intent intentAdd = new Intent(FriendsFragment.ACTION_ADD_FRIEND);
+                    intentAdd.putExtra("idFriend", uid);
+                    intentAdd.putExtra("avata", (String) map.get("avata"));
+                    intentAdd.putExtra("email", (String) map.get("email"));
+                    intentAdd.putExtra("name", (String) map.get("name"));
+                    getContext().sendBroadcast(intentAdd);
 
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-                        if (getActivity() != null && dataSnapshot.getValue() != null) {
-                            HashMap map = (HashMap) dataSnapshot.getValue();
-                            String uid = (String) map.get("uid");
-
-                            for (User author : friends) {
-                                if (author.uid != null && author.uid.equals(uid)) {
-                                    Intent intentAdd = new Intent(FriendsFragment.ACTION_ADD_FRIEND);
-                                    intentAdd.putExtra("idFriend", uid);
-                                    intentAdd.putExtra("avata", (String) map.get("avata"));
-                                    intentAdd.putExtra("email", (String) map.get("email"));
-                                    intentAdd.putExtra("name", (String) map.get("name"));
-                                    getContext().sendBroadcast(intentAdd);
-
-                                    friends.remove(author);
-                                }
-                            }
-                            adapter.notifyDataSetChanged();
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                    friends.remove(author);
+                }
+            }
+            adapter.notifyDataSetChanged();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 }

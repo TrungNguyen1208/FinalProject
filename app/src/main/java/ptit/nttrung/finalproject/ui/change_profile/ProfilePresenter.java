@@ -22,10 +22,6 @@ import ptit.nttrung.finalproject.data.local.StaticConfig;
 import ptit.nttrung.finalproject.model.entity.Configuration;
 import ptit.nttrung.finalproject.model.entity.User;
 
-/**
- * Created by TrungNguyen on 12/25/2017.
- */
-
 public class ProfilePresenter extends Presenter<ProfileView> {
 
     private Context context;

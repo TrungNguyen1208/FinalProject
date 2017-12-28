@@ -24,10 +24,6 @@ import ptit.nttrung.finalproject.ui.friend.requesst_friend_frag.RequestFriendFra
 import ptit.nttrung.finalproject.ui.main.MainActivity;
 import ptit.nttrung.finalproject.util.helper.ActivityUtils;
 
-/**
- * Created by TrungNguyen on 12/17/2017.
- */
-
 public class FriendActivity extends BaseDrawerActivity {
 
     private static final String TAG = FriendActivity.class.getName();

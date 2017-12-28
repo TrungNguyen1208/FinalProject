@@ -10,7 +10,6 @@ import android.provider.BaseColumns;
 import ptit.nttrung.finalproject.model.entity.Friend;
 import ptit.nttrung.finalproject.model.entity.ListFriend;
 
-
 public final class FriendDB {
     private static FriendDBHelper mDbHelper = null;
 

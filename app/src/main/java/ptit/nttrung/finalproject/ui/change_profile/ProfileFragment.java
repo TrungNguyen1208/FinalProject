@@ -47,10 +47,6 @@ import ptit.nttrung.finalproject.util.helper.ActivityUtils;
 import ptit.nttrung.finalproject.util.helper.ImageUtils;
 import ptit.nttrung.finalproject.util.widget.RecyclerItemClickListener;
 
-/**
- * Created by TrungNguyen on 12/25/2017.
- */
-
 public class ProfileFragment extends BaseFragment implements ProfileView {
     private static final String TAG = ProfileFragment.class.getName();
 

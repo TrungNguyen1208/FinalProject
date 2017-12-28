@@ -1,12 +1,12 @@
 package ptit.nttrung.finalproject.ui.friend.requesst_friend_frag;
 
-import ptit.nttrung.finalproject.base.BaseView;
+import com.google.firebase.database.DataSnapshot;
 
-/**
- * Created by TrungNguyen on 12/26/2017.
- */
+import ptit.nttrung.finalproject.base.BaseView;
 
 public interface FriendRequestView extends BaseView{
 
-    void getRequestFriend();
+    void onAddRequestSuccess(DataSnapshot dataSnapshot);
+
+    void onDeniedRequestSuccess(DataSnapshot dataSnapshot);
 }

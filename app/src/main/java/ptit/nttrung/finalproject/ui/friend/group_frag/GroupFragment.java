@@ -37,10 +37,6 @@ import ptit.nttrung.finalproject.data.local.StaticConfig;
 import ptit.nttrung.finalproject.model.entity.Group;
 import ptit.nttrung.finalproject.ui.add_group.AddGroupActivity;
 
-/**
- * Created by TrungNguyen on 12/17/2017.
- */
-
 public class GroupFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private RecyclerView recyclerListGroups;
@@ -191,7 +187,7 @@ public class GroupFragment extends BaseFragment implements SwipeRefreshLayout.On
                         deleteGroup(group, 0);
                     }
                 } else {
-                    Toast.makeText(getActivity(), "You are not admin", Toast.LENGTH_LONG).show();
+                    makeToastError("Bạn không phải là trưởng nhóm");
                 }
                 break;
             case CONTEXT_MENU_EDIT:
@@ -201,15 +197,14 @@ public class GroupFragment extends BaseFragment implements SwipeRefreshLayout.On
                     intent.putExtra("groupId", listGroup.get(posGroup1).id);
                     startActivityForResult(intent, REQUEST_EDIT_GROUP);
                 } else {
-                    Toast.makeText(getActivity(), "You are not admin", Toast.LENGTH_LONG).show();
+                    makeToastError("Bạn không phải là trưởng nhóm");
                 }
-
                 break;
 
             case CONTEXT_MENU_LEAVE:
                 int position = item.getIntent().getIntExtra(CONTEXT_MENU_KEY_INTENT_DATA_POS, -1);
                 if (((String) listGroup.get(position).groupInfo.get("admin")).equals(StaticConfig.UID)) {
-                    Toast.makeText(getActivity(), "Admin cannot leave group", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Trưởng nhóm không thể rời nhóm", Toast.LENGTH_LONG).show();
                 } else {
                     waitingLeavingGroup.show();
                     Group groupLeaving = listGroup.get(position);
@@ -231,7 +226,7 @@ public class GroupFragment extends BaseFragment implements SwipeRefreshLayout.On
                             GroupDB.getInstance(getContext()).deleteGroup(group.id);
                             listGroup.remove(group);
                             adapter.notifyDataSetChanged();
-                            Toast.makeText(getContext(), "Deleted group", Toast.LENGTH_SHORT).show();
+                            makeToastSucces("Xóa nhóm");
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -241,8 +236,8 @@ public class GroupFragment extends BaseFragment implements SwipeRefreshLayout.On
                             new LovelyInfoDialog(getContext())
                                     .setTopColorRes(R.color.colorAccent)
                                     .setIcon(R.drawable.ic_dialog_delete_group)
-                                    .setTitle("False")
-                                    .setMessage("Cannot delete group right now, please try again.")
+                                    .setTitle("Lỗi")
+                                    .setMessage("Không thể xóa nhóm trò chuyện. Thử lại!")
                                     .setCancelable(false)
                                     .setConfirmButtonText("Ok")
                                     .show();

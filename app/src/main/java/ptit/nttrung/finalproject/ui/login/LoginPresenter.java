@@ -22,10 +22,6 @@ import ptit.nttrung.finalproject.data.local.SharedPreferenceHelper;
 import ptit.nttrung.finalproject.data.local.StaticConfig;
 import ptit.nttrung.finalproject.model.entity.User;
 
-/**
- * Created by TrungNguyen on 12/16/2017.
- */
-
 public class LoginPresenter extends Presenter<LoginView> {
 
     private Context context;
@@ -58,7 +54,6 @@ public class LoginPresenter extends Presenter<LoginView> {
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        getView().hideProgressDialog();
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
                             StaticConfig.UID = user.getUid();
@@ -106,6 +101,7 @@ public class LoginPresenter extends Presenter<LoginView> {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        getView().hideProgressDialog();
                         HashMap hashUser = (HashMap) dataSnapshot.getValue();
                         User userInfo = new User();
                         userInfo.uid = StaticConfig.UID;
@@ -118,7 +114,7 @@ public class LoginPresenter extends Presenter<LoginView> {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        getView().hideProgressDialog();
                     }
                 });
     }

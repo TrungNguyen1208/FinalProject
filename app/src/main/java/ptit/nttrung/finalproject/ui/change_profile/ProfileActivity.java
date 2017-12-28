@@ -14,9 +14,6 @@ import ptit.nttrung.finalproject.ui.friend.FriendActivity;
 import ptit.nttrung.finalproject.ui.main.MainActivity;
 import ptit.nttrung.finalproject.util.helper.ActivityUtils;
 
-/**
- * Created by TrungNguyen on 12/25/2017.
- */
 
 public class ProfileActivity extends BaseDrawerActivity {
     private static String TAG = ProfileActivity.class.getName();

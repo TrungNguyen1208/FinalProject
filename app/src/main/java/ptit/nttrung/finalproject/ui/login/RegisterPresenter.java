@@ -19,10 +19,6 @@ import ptit.nttrung.finalproject.base.Presenter;
 import ptit.nttrung.finalproject.data.local.StaticConfig;
 import ptit.nttrung.finalproject.model.entity.User;
 
-/**
- * Created by TrungNguyen on 12/16/2017.
- */
-
 public class RegisterPresenter extends Presenter<RegisterView> {
 
     private String TAG = "Register";

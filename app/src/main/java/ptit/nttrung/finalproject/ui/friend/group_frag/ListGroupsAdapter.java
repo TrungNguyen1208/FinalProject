@@ -119,9 +119,9 @@ public class ListGroupsAdapter extends RecyclerView.Adapter<ListGroupsAdapter.Vi
             menu.setHeaderTitle((String) ((Object[]) btnMore.getTag())[0]);
             Intent data = new Intent();
             data.putExtra(GroupFragment.CONTEXT_MENU_KEY_INTENT_DATA_POS, (Integer) ((Object[]) btnMore.getTag())[1]);
-            menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_EDIT, Menu.NONE, "Edit group").setIntent(data);
-            menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_DELETE, Menu.NONE, "Delete group").setIntent(data);
-            menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_LEAVE, Menu.NONE, "Leave group").setIntent(data);
+            menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_EDIT, Menu.NONE, "Chỉnh sửa nhóm").setIntent(data);
+            menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_DELETE, Menu.NONE, "Xóa nhóm").setIntent(data);
+            menu.add(Menu.NONE, GroupFragment.CONTEXT_MENU_LEAVE, Menu.NONE, "Rời nhóm").setIntent(data);
         }
     }
 }

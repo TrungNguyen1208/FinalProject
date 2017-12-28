@@ -1,7 +1,5 @@
 package ptit.nttrung.finalproject.model.entity;
 
-
-
 public class Configuration {
     private String label;
     private String value;

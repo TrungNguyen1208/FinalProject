@@ -34,10 +34,6 @@ import ptit.nttrung.finalproject.model.entity.Group;
 import ptit.nttrung.finalproject.model.entity.ListFriend;
 import ptit.nttrung.finalproject.model.entity.Room;
 
-/**
- * Created by TrungNguyen on 12/17/2017.
- */
-
 public class AddGroupActivity extends AppCompatActivity {
 
     private RecyclerView recyclerListFriend;

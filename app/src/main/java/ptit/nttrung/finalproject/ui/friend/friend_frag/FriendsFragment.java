@@ -47,11 +47,6 @@ import ptit.nttrung.finalproject.model.entity.Friend;
 import ptit.nttrung.finalproject.model.entity.ListFriend;
 import ptit.nttrung.finalproject.model.entity.User;
 
-/**
- * Created by TrungNguyen on 12/17/2017.
- */
-
-
 public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, FriendsView {
 
     public static final String ACTION_DELETE_FRIEND = "com.android.ptit.DELETE_FRIEND";
@@ -131,7 +126,6 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
         FriendDB.getInstance(getContext()).dropDB();
         detectFriendOnline.cancel();
         presenter.getListFriendUId();
-
     }
 
     @Override
@@ -144,10 +138,39 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
                 listFriendID.add(mapRecord.get(key).toString());
             }
             tvNoFriend.setVisibility(View.GONE);
-            getAllFriendInfo(0);
+            showAllFriendInfo(0);
         } else {
             hideProgressDialog();
             tvNoFriend.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onGetInfoSuccess(DataSnapshot dataSnapshot, String id) {
+        Friend user = new Friend();
+        HashMap mapUserInfo = (HashMap) dataSnapshot.getValue();
+
+        user.name = (String) mapUserInfo.get("name");
+        user.email = (String) mapUserInfo.get("email");
+        user.avata = (String) mapUserInfo.get("avata");
+        user.uid = id;
+        String idRoom = id.compareTo(StaticConfig.UID) > 0 ? (StaticConfig.UID + id).hashCode() + "" : "" + (id + StaticConfig.UID).hashCode();
+        user.idRoom = idRoom;
+        dataListFriend.getListFriend().add(user);
+        FriendDB.getInstance(getContext()).addFriend(user);
+    }
+
+    @Override
+    public void showAllFriendInfo(final int index) {
+        if (index == listFriendID.size()) {
+            //save list friend
+            adapter.notifyDataSetChanged();
+            hideProgressDialog();
+            mSwipeRefreshLayout.setRefreshing(false);
+            detectFriendOnline.start();
+        } else {
+            final String id = listFriendID.get(index);
+            presenter.getFriendInfo(index, id);
         }
     }
 
@@ -314,45 +337,6 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
-        }
-    }
-
-    /**
-     * Truy cap bang user lay thong tin id nguoi dung
-     */
-    private void getAllFriendInfo(final int index) {
-        if (index == listFriendID.size()) {
-            //save list friend
-            adapter.notifyDataSetChanged();
-            hideProgressDialog();
-            mSwipeRefreshLayout.setRefreshing(false);
-            detectFriendOnline.start();
-        } else {
-            final String id = listFriendID.get(index);
-            FirebaseDatabase.getInstance().getReference().child("user/" + id).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() != null) {
-                        Friend user = new Friend();
-                        HashMap mapUserInfo = (HashMap) dataSnapshot.getValue();
-
-                        user.name = (String) mapUserInfo.get("name");
-                        user.email = (String) mapUserInfo.get("email");
-                        user.avata = (String) mapUserInfo.get("avata");
-                        user.uid = id;
-                        String idRoom = id.compareTo(StaticConfig.UID) > 0 ? (StaticConfig.UID + id).hashCode() + "" : "" + (id + StaticConfig.UID).hashCode();
-                        user.idRoom = idRoom;
-                        dataListFriend.getListFriend().add(user);
-                        FriendDB.getInstance(getContext()).addFriend(user);
-                    }
-                    getAllFriendInfo(index + 1);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    hideProgressDialog();
                 }
             });
         }

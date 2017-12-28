@@ -22,10 +22,6 @@ import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.base.BaseFragment;
 import ptit.nttrung.finalproject.ui.main.MainActivity;
 
-/**
- * Created by TrungNguyen on 12/4/2017.
- */
-
 public class LoginFragment extends BaseFragment implements LoginView{
 
     @BindView(R.id.edit_email)
