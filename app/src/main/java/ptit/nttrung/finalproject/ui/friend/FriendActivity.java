@@ -22,6 +22,7 @@ import ptit.nttrung.finalproject.ui.friend.friend_frag.FriendsFragment;
 import ptit.nttrung.finalproject.ui.friend.group_frag.GroupFragment;
 import ptit.nttrung.finalproject.ui.friend.requesst_friend_frag.RequestFriendFragment;
 import ptit.nttrung.finalproject.ui.main.MainActivity;
+import ptit.nttrung.finalproject.ui.setting.SettingActivity;
 import ptit.nttrung.finalproject.util.helper.ActivityUtils;
 
 public class FriendActivity extends BaseDrawerActivity {
@@ -75,6 +76,9 @@ public class FriendActivity extends BaseDrawerActivity {
                         break;
                     case R.id.feed_back:
                         ActivityUtils.sendFeedBack(FriendActivity.this);
+                        break;
+                    case R.id.menu_setting:
+                        startActivity(new Intent(FriendActivity.this, SettingActivity.class));
                         break;
                     default:
                         break;

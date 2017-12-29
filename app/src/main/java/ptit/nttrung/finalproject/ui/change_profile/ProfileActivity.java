@@ -12,6 +12,7 @@ import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.base.BaseDrawerActivity;
 import ptit.nttrung.finalproject.ui.friend.FriendActivity;
 import ptit.nttrung.finalproject.ui.main.MainActivity;
+import ptit.nttrung.finalproject.ui.setting.SettingActivity;
 import ptit.nttrung.finalproject.util.helper.ActivityUtils;
 
 
@@ -60,6 +61,9 @@ public class ProfileActivity extends BaseDrawerActivity {
                         break;
                     case R.id.feed_back:
                         ActivityUtils.sendFeedBack(ProfileActivity.this);
+                        break;
+                    case R.id.menu_setting:
+                        startActivity(new Intent(ProfileActivity.this, SettingActivity.class));
                         break;
                     default:
                         break;

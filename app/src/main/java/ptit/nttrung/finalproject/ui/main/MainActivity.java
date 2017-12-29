@@ -3,32 +3,111 @@ package ptit.nttrung.finalproject.ui.main;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RadioGroup;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.base.BaseDrawerActivity;
+import ptit.nttrung.finalproject.ui.add_restaurant.AddRestaurantActivity;
 import ptit.nttrung.finalproject.ui.change_profile.ProfileActivity;
 import ptit.nttrung.finalproject.ui.friend.FriendActivity;
+import ptit.nttrung.finalproject.ui.friend.ViewPagerAdapter;
+import ptit.nttrung.finalproject.ui.main.nearby.NearbyFragment;
+import ptit.nttrung.finalproject.ui.main.newfeed.NewfeedFragment;
+import ptit.nttrung.finalproject.ui.setting.SettingActivity;
 import ptit.nttrung.finalproject.util.helper.ActivityUtils;
 
-public class MainActivity extends BaseDrawerActivity {
+public class MainActivity extends BaseDrawerActivity implements RadioGroup.OnCheckedChangeListener {
+
+    private static final String TAG = MainActivity.class.getName();
+
+    @BindView(R.id.view_pager_newfeed)
+    ViewPager viewPager;
+    @BindView(R.id.rb_places)
+    AppCompatRadioButton rbPlaces;
+    @BindView(R.id.rb_food)
+    AppCompatRadioButton rbFood;
+    @BindView(R.id.rg_toolbar_newfeed)
+    RadioGroup rgToolbarNewfeed;
+    @BindView(R.id.coordinatorLayout)
+    CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.iv_insert_restaurant)
+    ImageView ivInsertRestaurent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        setupViewPager(viewPager);
+        rgToolbarNewfeed.setOnCheckedChangeListener(this);
+        ivInsertRestaurent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AddRestaurantActivity.class));
+            }
+        });
     }
 
     @Override
     protected void setupToolbar() {
         super.setupToolbar();
         getToolbar().setNavigationIcon(R.drawable.ic_menu);
-        getSupportActionBar().setTitle("Trang chủ");
+        getSupportActionBar().setTitle("");
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFrag(new NewfeedFragment());
+        adapter.addFrag(new NearbyFragment());
+        viewPager.setAdapter(adapter);
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        rbPlaces.setChecked(true);
+                        break;
+                    case 1:
+                        rbFood.setChecked(true);
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+        switch (checkedId) {
+            case R.id.rb_places:
+                viewPager.setCurrentItem(0);
+                break;
+            case R.id.rb_food:
+                viewPager.setCurrentItem(1);
+                break;
+        }
     }
 
     @Override
@@ -55,6 +134,9 @@ public class MainActivity extends BaseDrawerActivity {
                         break;
                     case R.id.feed_back:
                         ActivityUtils.sendFeedBack(MainActivity.this);
+                        break;
+                    case R.id.menu_setting:
+                        startActivity(new Intent(MainActivity.this, SettingActivity.class));
                         break;
                     default:
                         break;

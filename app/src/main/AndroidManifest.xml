@@ -41,6 +41,7 @@
         <activity android:name=".ui.gallery.file.GalleryFileActivity" />
         <activity android:name=".ui.gallery.folder.GalleryFolderActivity" />
         <activity android:name=".ui.add_restaurant.AddRestaurantActivity" />
+        <activity android:name=".ui.setting.SettingActivity" />
 
         <service
             android:name=".data.firebase.FriendChatService"
