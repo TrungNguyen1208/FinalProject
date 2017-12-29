@@ -40,6 +40,7 @@
         <activity android:name=".ui.maps.MapsActivity" />
         <activity android:name=".ui.gallery.file.GalleryFileActivity" />
         <activity android:name=".ui.gallery.folder.GalleryFolderActivity" />
+        <activity android:name=".ui.add_restaurant.AddRestaurantActivity" />
 
         <service
             android:name=".data.firebase.FriendChatService"

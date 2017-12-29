@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -27,14 +26,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ptit.nttrung.finalproject.R;
-import ptit.nttrung.finalproject.data.local.FriendDB;
+import ptit.nttrung.finalproject.base.BaseActivity;
 import ptit.nttrung.finalproject.data.local.GroupDB;
 import ptit.nttrung.finalproject.data.local.StaticConfig;
 import ptit.nttrung.finalproject.model.entity.Group;
 import ptit.nttrung.finalproject.model.entity.ListFriend;
 import ptit.nttrung.finalproject.model.entity.Room;
 
-public class AddGroupActivity extends AppCompatActivity {
+public class AddGroupActivity extends BaseActivity implements AddGroupView {
 
     private RecyclerView recyclerListFriend;
     private ListPeopleAdapter adapter;
@@ -48,6 +47,8 @@ public class AddGroupActivity extends AppCompatActivity {
     private boolean isEditGroup;
     private Group groupEdit;
 
+    private AddGroupPresenter presenter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +56,11 @@ public class AddGroupActivity extends AppCompatActivity {
 
         Intent intentData = getIntent();
         txtActionName = (TextView) findViewById(R.id.txtActionName);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        listFriend = FriendDB.getInstance(this).getListFriend();
+
+        presenter = new AddGroupPresenter(this);
+        presenter.attachView(this);
+        listFriend = presenter.getListFriend();
+
         listIDChoose = new HashSet<>();
         listIDRemove = new HashSet<>();
         listIDChoose.add(StaticConfig.UID);
@@ -64,6 +68,7 @@ public class AddGroupActivity extends AppCompatActivity {
         editTextGroupName = (EditText) findViewById(R.id.editGroupName);
         txtGroupIcon = (TextView) findViewById(R.id.icon_group);
         dialogWait = new LovelyProgressDialog(this).setCancelable(false);
+
         editTextGroupName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -117,13 +122,13 @@ public class AddGroupActivity extends AppCompatActivity {
         }
 
         recyclerListFriend = (RecyclerView) findViewById(R.id.recycleListFriend);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerListFriend.setLayoutManager(linearLayoutManager);
         adapter = new ListPeopleAdapter(this, listFriend, btnAddGroup, listIDChoose, listIDRemove, isEditGroup, groupEdit);
         recyclerListFriend.setAdapter(adapter);
     }
 
     private void editGroup() {
-        //Show dialog wait
         dialogWait.setIcon(R.drawable.ic_add_group_dialog)
                 .setTitle("Editing....")
                 .setTopColorRes(R.color.colorPrimary)
@@ -136,45 +141,13 @@ public class AddGroupActivity extends AppCompatActivity {
         }
         room.groupInfo.put("name", editTextGroupName.getText().toString());
         room.groupInfo.put("admin", StaticConfig.UID);
-        FirebaseDatabase.getInstance().getReference().child("group/" + idGroup).setValue(room)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        addRoomForUser(idGroup, 0);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        dialogWait.dismiss();
-                        new LovelyInfoDialog(AddGroupActivity.this) {
-                            @Override
-                            public LovelyInfoDialog setConfirmButtonText(String text) {
-                                findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        dismiss();
-                                    }
-                                });
-                                return super.setConfirmButtonText(text);
-                            }
-                        }
-                                .setTopColorRes(R.color.colorAccent)
-                                .setIcon(R.drawable.ic_add_group_dialog)
-                                .setTitle("False")
-                                .setMessage("Cannot connect database")
-                                .setCancelable(false)
-                                .setConfirmButtonText("Ok")
-                                .show();
-                    }
-                })
-        ;
+        presenter.editGroup(idGroup, room);
     }
 
     private void createGroup() {
         dialogWait.setIcon(R.drawable.ic_add_group_dialog)
                 .setTitle("Registering....")
-                .setTopColorRes(R.color.colorPrimary)
+                .setTopColorRes(R.color.colorAccent)
                 .show();
 
         final String idGroup = (StaticConfig.UID + System.currentTimeMillis()).hashCode() + "";
@@ -184,12 +157,7 @@ public class AddGroupActivity extends AppCompatActivity {
         }
         room.groupInfo.put("name", editTextGroupName.getText().toString());
         room.groupInfo.put("admin", StaticConfig.UID);
-        FirebaseDatabase.getInstance().getReference().child("group/" + idGroup).setValue(room).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                addRoomForUser(idGroup, 0);
-            }
-        });
+        presenter.createGroup(idGroup, room);
     }
 
     private void deleteRoomForUser(final String roomId, final int userIndex) {
@@ -234,7 +202,8 @@ public class AddGroupActivity extends AppCompatActivity {
         }
     }
 
-    private void addRoomForUser(final String roomId, final int userIndex) {
+    @Override
+    public void addRoomForUser(final String roomId, final int userIndex) {
         if (userIndex == listIDChoose.size()) {
             if (!isEditGroup) {
                 dialogWait.dismiss();
@@ -276,5 +245,16 @@ public class AddGroupActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public void hideDialogWait() {
+        if (dialogWait != null) dialogWait.dismiss();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

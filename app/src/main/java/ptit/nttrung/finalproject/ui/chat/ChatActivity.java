@@ -12,10 +12,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +31,7 @@ import ptit.nttrung.finalproject.model.entity.Message;
  * Created by TrungNguyen on 9/26/2017.
  */
 
-public class ChatActivity extends BaseActivity {
+public class ChatActivity extends BaseActivity implements ChatView {
 
     @BindView(R.id.btnSend)
     ImageButton btnSend;
@@ -51,6 +48,7 @@ public class ChatActivity extends BaseActivity {
     private ArrayList<CharSequence> idFriend;
     private Consersation consersation = new Consersation();
     private LinearLayoutManager linearLayoutManager;
+    private ChatPresenter presenter = new ChatPresenter();
 
     public static HashMap<String, Bitmap> bitmapAvataFriend;
     public Bitmap bitmapAvataUser;
@@ -63,6 +61,7 @@ public class ChatActivity extends BaseActivity {
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowHomeEnabled(true);
+        presenter.attachView(this);
 
         Intent intentData = getIntent();
         idFriend = intentData.getCharSequenceArrayListExtra(StaticConfig.INTENT_KEY_CHAT_ID);
@@ -84,44 +83,7 @@ public class ChatActivity extends BaseActivity {
             recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
             recyclerChat.setLayoutManager(linearLayoutManager);
             adapter = new ListMessageAdapter(this, consersation, bitmapAvataFriend, bitmapAvataUser);
-            FirebaseDatabase.getInstance().getReference().child("message/" + roomId).addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    if (dataSnapshot.getValue() != null) {
-                        HashMap mapMessage = (HashMap) dataSnapshot.getValue();
-
-                        Message newMessage = new Message();
-                        newMessage.idSender = (String) mapMessage.get("idSender");
-                        newMessage.idReceiver = (String) mapMessage.get("idReceiver");
-                        newMessage.text = (String) mapMessage.get("text");
-                        newMessage.timestamp = (long) mapMessage.get("timestamp");
-
-                        consersation.getListMessageData().add(newMessage);
-                        adapter.notifyDataSetChanged();
-                        linearLayoutManager.scrollToPosition(consersation.getListMessageData().size() - 1);
-                    }
-                }
-
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
+            presenter.getListMesseage(roomId);
             recyclerChat.setAdapter(adapter);
         }
     }
@@ -155,7 +117,7 @@ public class ChatActivity extends BaseActivity {
             newMessage.idSender = StaticConfig.UID;
             newMessage.idReceiver = roomId;
             newMessage.timestamp = System.currentTimeMillis();
-            FirebaseDatabase.getInstance().getReference().child("message/" + roomId).push().setValue(newMessage);
+            presenter.sendMessage(roomId, newMessage);
         }
     }
 
@@ -163,5 +125,26 @@ public class ChatActivity extends BaseActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @Override
+    public void showMessage(DataSnapshot dataSnapshot) {
+        HashMap mapMessage = (HashMap) dataSnapshot.getValue();
+
+        Message newMessage = new Message();
+        newMessage.idSender = (String) mapMessage.get("idSender");
+        newMessage.idReceiver = (String) mapMessage.get("idReceiver");
+        newMessage.text = (String) mapMessage.get("text");
+        newMessage.timestamp = (long) mapMessage.get("timestamp");
+
+        consersation.getListMessageData().add(newMessage);
+        adapter.notifyDataSetChanged();
+        linearLayoutManager.scrollToPosition(consersation.getListMessageData().size() - 1);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
