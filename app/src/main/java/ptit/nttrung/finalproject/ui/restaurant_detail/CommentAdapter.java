@@ -46,7 +46,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Comment comment = commentList.get(position);
         holder.tvContentCmtItem.setText(comment.text);
-        holder.tvTitleCmtItem.setText(comment.text);
+        holder.tvTitleCmtItem.setText(comment.title);
         holder.tvPointCmtItem.setText(String.valueOf(comment.survey.dtb));
 
         FirebaseUtil.getUserRef().child(comment.uId).child("avata").addListenerForSingleValueEvent(new ValueEventListener() {

@@ -29,10 +29,6 @@ import ptit.nttrung.finalproject.ui.main.RestaurantViewHolder;
 import ptit.nttrung.finalproject.ui.main.newfeed.NewfeedFragment;
 import ptit.nttrung.finalproject.ui.restaurant_detail.RestaurantDetailActivity;
 
-/**
- * Created by TrungNguyen on 12/29/2017.
- */
-
 public class NearbyFragment extends BaseFragment {
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;

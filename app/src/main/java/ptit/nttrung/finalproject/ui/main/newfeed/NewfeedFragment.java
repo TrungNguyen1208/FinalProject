@@ -1,5 +1,6 @@
 package ptit.nttrung.finalproject.ui.main.newfeed;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,6 +42,14 @@ public class NewfeedFragment extends BaseFragment {
     private OnPostSelectedListener mListener;
     private RecyclerView.Adapter<RestaurantViewHolder> mAdapter;
 
+    public static ProgressDialog dialog;
+
+    public static void showDialog(Context context) {
+        dialog = new ProgressDialog(context);
+        dialog.setMessage("Đang lấy dữ liệu...");
+        dialog.show();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +81,7 @@ public class NewfeedFragment extends BaseFragment {
 
         Log.d(TAG, "Restoring recycler view position (all): " + mRecyclerViewPosition);
 
-        showProgressDialog("Đang tải");
+        showDialog(getContext());
         Query allPostsQuery = FirebaseUtil.getRestaurantRef();
 
         mAdapter = getFirebaseRecyclerAdapter(allPostsQuery);
@@ -82,7 +91,10 @@ public class NewfeedFragment extends BaseFragment {
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
                 if (itemCount == 1) {
-                    hideProgressDialog();
+                    if (dialog != null) {
+                        if (dialog.isShowing())
+                            dialog.hide();
+                    }
                 }
             }
         });
