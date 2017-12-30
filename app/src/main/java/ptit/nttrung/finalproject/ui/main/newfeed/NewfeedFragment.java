@@ -23,13 +23,11 @@ import butterknife.Unbinder;
 import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.base.BaseFragment;
 import ptit.nttrung.finalproject.data.firebase.FirebaseUtil;
+import ptit.nttrung.finalproject.data.local.SharedPreferenceHelper;
 import ptit.nttrung.finalproject.model.entity.Restaurant;
 import ptit.nttrung.finalproject.ui.main.RestaurantViewHolder;
 import ptit.nttrung.finalproject.ui.restaurant_detail.RestaurantDetailActivity;
 
-/**
- * Created by TrungNguyen on 12/29/2017.
- */
 
 public class NewfeedFragment extends BaseFragment {
 
@@ -120,6 +118,7 @@ public class NewfeedFragment extends BaseFragment {
             postViewHolder.setPhoto(restaurant.images.get(0));
             postViewHolder.setAddresss(restaurant.address);
             postViewHolder.setNameRestaurant(restaurant.name);
+            postViewHolder.setDistanceRestaurant(restaurant.latitude, restaurant.longitude, SharedPreferenceHelper.getInstance(getContext()).getCurrentLocation());
 
             final String postKey;
             if (mAdapter instanceof FirebaseRecyclerAdapter) {
@@ -147,7 +146,6 @@ public class NewfeedFragment extends BaseFragment {
                 }
             };
             FirebaseUtil.getLikesRef().child(postKey).addValueEventListener(likeListener);
-            postViewHolder.mLikeListener = likeListener;
 
             postViewHolder.setPostClickListener(new RestaurantViewHolder.PostClickListener() {
                 @Override

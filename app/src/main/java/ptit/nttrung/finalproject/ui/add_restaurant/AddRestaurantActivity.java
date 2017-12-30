@@ -25,7 +25,7 @@ import ptit.nttrung.finalproject.ui.gallery.file.ImageGalleryBean;
 import ptit.nttrung.finalproject.ui.gallery.folder.GalleryFolderActivity;
 import ptit.nttrung.finalproject.util.helper.TimeUtils;
 
-public class AddRestaurantActivity extends BaseActivity {
+public class AddRestaurantActivity extends BaseActivity implements AddView {
 
     public static final int REQUEST_LOC = 1995;
     public static final int REQUEST_IMG = 1000;
@@ -60,6 +60,7 @@ public class AddRestaurantActivity extends BaseActivity {
     EditText etDescription;
 
     private ArrayList<ImageGalleryBean> imageGalleryBeen;
+    private AddPresenter presenter = new AddPresenter();
     private double selectedLat = 0, selectedLng = 0;
 
     @Override
@@ -67,6 +68,8 @@ public class AddRestaurantActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_restaurant);
         ButterKnife.bind(this);
+
+        presenter.attachView(this);
     }
 
     @OnClick({R.id.tab_back_place, R.id.linear_layout_map_location, R.id.text_view_open_time, R.id.text_view_close_time,

@@ -29,7 +29,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="5dp"
-                    android:text="POSTS"
+                    android:text="Các quán ăn đã thích"
                     android:textColor="@color/colorAccent" />
 
                 <View
@@ -160,6 +160,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/totalPost"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="2"
@@ -182,6 +183,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/totalFriend"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="2"
@@ -204,6 +206,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/totalImage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="1"

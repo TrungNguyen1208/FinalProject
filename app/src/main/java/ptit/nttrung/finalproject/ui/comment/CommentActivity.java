@@ -2,15 +2,23 @@ package ptit.nttrung.finalproject.ui.comment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import butterknife.BindView;
 import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.base.BaseActivity;
+import ptit.nttrung.finalproject.data.firebase.FirebaseUtil;
+import ptit.nttrung.finalproject.data.local.StaticConfig;
+import ptit.nttrung.finalproject.model.entity.Comment;
 
 
 /**
@@ -29,8 +37,10 @@ public class CommentActivity extends BaseActivity {
     TextView tvAddress;
     @BindView(R.id.txt_submit)
     TextView txtSubmit;
+    @BindView(R.id.frame_layout_rate)
+    FrameLayout layoutRate;
 
-    int vitri = 0;
+    int vitri = 0, khonggian, giaca, dichvu, chatluong;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,12 +59,12 @@ public class CommentActivity extends BaseActivity {
 
         tvName.setText(resName);
         tvAddress.setText(resAddress);
-//        ivRate.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivityForResult(new Intent(CommentActivity.this, ReviewActivity.class), 123);
-//            }
-//        });
+        layoutRate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(CommentActivity.this, ReviewActivity.class), 123);
+            }
+        });
 
         txtSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,8 +76,36 @@ public class CommentActivity extends BaseActivity {
                 } else if (vitri == 0) {
                     makeToastError("Vui lòng đánh giá quán ăn!");
                 } else {
-//                    String newKey = FirebaseUtil.getCommentRef().child(idRes).push().getKey();
+                    String newKey = FirebaseUtil.getCommentRef().child(idRes).push().getKey();
+                    final Comment comment = new Comment();
+                    comment.title = titleCmt;
+                    comment.text = contentCmt;
+                    comment.uId = StaticConfig.UID;
+                    comment.resId = idRes;
+                    comment.survey.chatluong = chatluong;
+                    comment.survey.vitri = vitri;
+                    comment.survey.dichvu = dichvu;
+                    comment.survey.giaca = giaca;
+                    comment.survey.khonggian = khonggian;
+                    comment.survey.dtb = (chatluong + vitri + dichvu + giaca + khonggian) / 5;
+                    comment.commentId = newKey;
 
+                    FirebaseUtil.getCommentRef().child(idRes).child(newKey).setValue(comment).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            makeToastSucces("Đăng bình luận thành công");
+
+                            Intent intent2 = new Intent("ACTION_COMMENT");
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("comment", comment);
+                            CommentActivity.this.sendBroadcast(intent2);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            makeToastError("Có lỗi xảy ra!");
+                        }
+                    });
                 }
             }
         });
@@ -79,6 +117,10 @@ public class CommentActivity extends BaseActivity {
         if (requestCode == 123) {
             if (resultCode == RESULT_OK) {
                 vitri = data.getExtras().getInt("vitri");
+                giaca = data.getExtras().getInt("giaca");
+                chatluong = data.getExtras().getInt("chatluong");
+                khonggian = data.getExtras().getInt("khonggian");
+                dichvu = data.getExtras().getInt("dichvu");
             }
         }
     }

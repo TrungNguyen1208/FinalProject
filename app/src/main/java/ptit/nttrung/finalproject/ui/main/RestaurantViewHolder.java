@@ -1,6 +1,7 @@
 package ptit.nttrung.finalproject.ui.main;
 
 import android.content.Context;
+import android.location.Location;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +12,11 @@ import android.widget.ProgressBar;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +37,7 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
     ImageView mPhotoView;
     @BindView(R.id.contentFrame)
     LinearLayout contentFrame;
+
 
     public ValueEventListener mLikeListener;
     public enum LikeStatus {LIKED, NOT_LIKED}
@@ -82,7 +88,6 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
             }
         } catch (Exception e) {
         }
-
     }
 
     public void setNameRestaurant(String text) {
@@ -97,8 +102,18 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
         tvAddressItemPlace.setText(text);
     }
 
-    public void setDistanceRestaurant(String text) {
-        tvDistanceItemPlace.setText(text);
+    public void setDistanceRestaurant(double lat, double lng, LatLng latLng) {
+        Location locBrachRestaunt = new Location("");
+        locBrachRestaunt.setLatitude(lat);
+        locBrachRestaunt.setLongitude(lng);
+
+        Location currentLoc = new Location("");
+        currentLoc.setLatitude(latLng.latitude);
+        currentLoc.setLongitude(latLng.longitude);
+
+        NumberFormat formatter = new DecimalFormat("#0.0");
+        double distance = currentLoc.distanceTo(locBrachRestaunt) / 1000;
+        tvDistanceItemPlace.setText(formatter.format(distance) + " km");
     }
 
     public void setPostClickListener(PostClickListener listener) {
