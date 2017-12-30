@@ -10,5 +10,7 @@
     <string name="hint_username">Nhập tên</string>
 
     <string name="google_map_api_key">AIzaSyCBJniVtYVzPlzmHaln0jImVSNbNBc2Cr0</string>
+    <string name="google_map_api_key_server">AIzaSyC6S-tAgh-pNW-PBE9txlRxTWX8cO8n1Io</string>
     <string name="google_map_api_key_polyline">AIzaSyA3cUC6tWZrQf3fCaolWfmZBt25UPBgaTc</string>
+    <string name="TEXT_NOT_FOUND_ADDRESS">Không tìm thấy địa điểm</string>
 </resources>

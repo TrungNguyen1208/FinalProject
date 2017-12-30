@@ -175,11 +175,13 @@
             </LinearLayout>
 
             <View
+                android:visibility="gone"
                 android:layout_width="fill_parent"
                 android:layout_height="0.100000024px"
                 android:background="@color/colorGray" />
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/linear_layout_choose_type_res"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

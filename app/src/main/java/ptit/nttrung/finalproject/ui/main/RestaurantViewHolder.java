@@ -1,0 +1,114 @@
+package ptit.nttrung.finalproject.ui.main;
+
+import android.content.Context;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextSwitcher;
+import android.widget.TextView;
+
+import com.google.firebase.database.ValueEventListener;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import ptit.nttrung.finalproject.R;
+import ptit.nttrung.finalproject.util.helper.GlideUtil;
+
+public class RestaurantViewHolder extends RecyclerView.ViewHolder {
+
+    @BindView(R.id.tv_rate_item_place)
+    TextView tvRateItemPlace;
+    @BindView(R.id.tv_name_item_place)
+    TextView tvNameItemPlace;
+    @BindView(R.id.tv_address_item_place)
+    TextView tvAddressItemPlace;
+    @BindView(R.id.tv_distance_item_place)
+    TextView tvDistanceItemPlace;
+    @BindView(R.id.iv_item_place)
+    ImageView mPhotoView;
+
+    public ValueEventListener mLikeListener;
+
+    public enum LikeStatus {LIKED, NOT_LIKED}
+
+    private PostClickListener mListener;
+    private TextSwitcher mNumLikesView;
+    private final ImageView mLikeIcon;
+    private ProgressBar mProgress;
+
+    private final View mView;
+
+    public RestaurantViewHolder(View itemView) {
+        super(itemView);
+        mView = itemView;
+        ButterKnife.bind(this, itemView);
+
+        mNumLikesView = (TextSwitcher) itemView.findViewById(R.id.tsLikesCounter);
+        mProgress = (ProgressBar) itemView.findViewById(R.id.pbImageLoading);
+
+        itemView.findViewById(R.id.btnComments).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.showComments();
+            }
+        });
+        mLikeIcon = (ImageView) itemView.findViewById(R.id.btnLike);
+        mLikeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.toggleLike();
+            }
+        });
+    }
+
+    public void setPhoto(String url) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                GlideUtil.loadImage(url, mPhotoView, mProgress);
+            } else {
+                GlideUtil.loadImage(url, mPhotoView);
+            }
+        } catch (Exception e) {
+        }
+
+    }
+
+    public void setNameRestaurant(String text) {
+        if (text == null || text.isEmpty()) {
+            tvNameItemPlace.setText("Quán Ăn");
+        } else {
+            tvNameItemPlace.setText(text);
+        }
+    }
+
+    public void setAddresss(String text) {
+        tvAddressItemPlace.setText(text);
+    }
+
+    public void setDistanceRestaurant(String text) {
+        tvDistanceItemPlace.setText(text);
+    }
+
+    public void setPostClickListener(PostClickListener listener) {
+        mListener = listener;
+    }
+
+    public void setLikeStatus(LikeStatus status, Context context) {
+        mLikeIcon.setImageDrawable(ContextCompat.getDrawable(context,
+                status == LikeStatus.LIKED ? R.drawable.ic_heart_red : R.drawable.ic_heart_outline_grey));
+    }
+
+    public void setNumLikes(long numLikes) {
+        String suffix = numLikes == 1 ? " like" : " likes";
+        mNumLikesView.setText(numLikes + suffix);
+    }
+
+    public interface PostClickListener {
+        void showComments();
+
+        void toggleLike();
+    }
+}

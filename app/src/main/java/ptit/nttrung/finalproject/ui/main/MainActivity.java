@@ -28,7 +28,7 @@ import ptit.nttrung.finalproject.ui.main.newfeed.NewfeedFragment;
 import ptit.nttrung.finalproject.ui.setting.SettingActivity;
 import ptit.nttrung.finalproject.util.helper.ActivityUtils;
 
-public class MainActivity extends BaseDrawerActivity implements RadioGroup.OnCheckedChangeListener {
+public class MainActivity extends BaseDrawerActivity implements RadioGroup.OnCheckedChangeListener, NewfeedFragment.OnPostSelectedListener, MainView {
 
     private static final String TAG = MainActivity.class.getName();
 
@@ -45,12 +45,15 @@ public class MainActivity extends BaseDrawerActivity implements RadioGroup.OnChe
     @BindView(R.id.iv_insert_restaurant)
     ImageView ivInsertRestaurent;
 
+    private MainPresenter presenter = new MainPresenter();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        presenter.attachView(this);
         setupViewPager(viewPager);
         rgToolbarNewfeed.setOnCheckedChangeListener(this);
         ivInsertRestaurent.setOnClickListener(new View.OnClickListener() {
@@ -169,5 +172,21 @@ public class MainActivity extends BaseDrawerActivity implements RadioGroup.OnChe
                         dialog.dismiss();
                     }
                 });
+    }
+
+    @Override
+    public void onPostComment(final String postKey) {
+
+    }
+
+    @Override
+    public void onPostLike(final String postKey) {
+        presenter.updateLike(postKey);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

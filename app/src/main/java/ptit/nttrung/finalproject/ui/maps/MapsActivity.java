@@ -25,22 +25,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.android.PolyUtil;
 
 import java.util.List;
 import java.util.Locale;
 
 import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.base.BaseActivity;
-import ptit.nttrung.finalproject.data.api.ApiUtils;
-import ptit.nttrung.finalproject.data.api.MapService;
-import ptit.nttrung.finalproject.model.pojo.DirectionRoot;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MapsActivity extends BaseActivity implements OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MapsView {
 
     private static final String TAG = MapsActivity.class.getName();
 
@@ -48,6 +41,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback,
     private SupportMapFragment mapFragment;
     private GoogleApiClient apiClient;
     private LocationRequest mLocationRequest;
+    private MapsPresenter presenter = new MapsPresenter();
 
     private LatLng latLngPlace;
     private LatLng latLngCurrent;
@@ -63,6 +57,8 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback,
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Map");
+
+        presenter.attachView(this);
 
         initData();
 
@@ -118,39 +114,6 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback,
         getCurrentLocation();
     }
 
-    private void drawDirectionMap(LatLng origin, LatLng destination, String key) {
-        MapService mapService = ApiUtils.getMapService();
-
-        String orginLatLng = String.valueOf(origin.latitude) + "," + String.valueOf(origin.longitude);
-        String destinationLatLng = String.valueOf(destination.latitude) + "," + String.valueOf(destination.longitude);
-
-//        Log.e("orginLatLng", String.valueOf(origin.latitude) + "," + String.valueOf(origin.longitude));
-//        Log.e("destinationLatLng", String.valueOf(destination.latitude) + "," + String.valueOf(destination.longitude));
-//        Log.e("key", key);
-
-        Call<DirectionRoot> call = mapService.getDirectionResults(orginLatLng, destinationLatLng);
-        call.enqueue(new Callback<DirectionRoot>() {
-            @Override
-            public void onResponse(Call<DirectionRoot> call, Response<DirectionRoot> response) {
-                hideProgressDialog();
-                DirectionRoot directionRoot = response.body();
-
-                if (directionRoot.getStatus().equals("OK")) {
-                    String points = directionRoot.getRoutes().get(0).getOverviewPolyline().getPoints();
-                    List<LatLng> latLngList = PolyUtil.decode(points);
-
-                    Polyline polyline = googleMap.addPolyline(new PolylineOptions().addAll(latLngList));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DirectionRoot> call, Throwable t) {
-                hideProgressDialog();
-                Log.e("Fail ", t.getMessage());
-            }
-        });
-    }
-
     private void buildGoogleApiClient() {
         apiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -173,7 +136,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback,
                         latLngCurrent = new LatLng(location.getLatitude(), location.getLongitude());
                         googleMap.addMarker(new MarkerOptions().position(latLngCurrent));
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngCurrent, 15.0F));
-                        drawDirectionMap(latLngCurrent, latLngPlace, getString(R.string.google_map_api_key_polyline));
+                        presenter.getDirectionRoot(latLngCurrent, latLngPlace);
 
                         if (apiClient != null) {
                             LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, this);
@@ -222,6 +185,17 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback,
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void drawDirectionMap(List<LatLng> list) {
+        Polyline polyline = googleMap.addPolyline(new PolylineOptions().addAll(list));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
 

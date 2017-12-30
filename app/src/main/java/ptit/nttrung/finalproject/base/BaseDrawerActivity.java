@@ -1,5 +1,6 @@
 package ptit.nttrung.finalproject.base;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -22,6 +23,7 @@ import ptit.nttrung.finalproject.data.local.SharedPreferenceHelper;
 import ptit.nttrung.finalproject.data.local.StaticConfig;
 import ptit.nttrung.finalproject.model.entity.User;
 import ptit.nttrung.finalproject.ui.login.LoginActivity;
+import ptit.nttrung.finalproject.ui.user_detail.UserDetailActivity;
 import ptit.nttrung.finalproject.util.helper.ImageUtils;
 
 
@@ -123,11 +125,11 @@ public abstract class BaseDrawerActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-//                Intent userDetailIntent = new Intent(getApplicationContext(), UserDetailActivity.class);
-//                userDetailIntent.putExtra(UserDetailActivity.USER_ID_EXTRA_NAME, mAuth.getCurrentUser().getUid());
-//
-//                startActivity(userDetailIntent);
-//                overridePendingTransition(0, 0);
+                Intent userDetailIntent = new Intent(getApplicationContext(), UserDetailActivity.class);
+                userDetailIntent.putExtra(UserDetailActivity.USER_ID_EXTRA_NAME, mAuth.getCurrentUser().getUid());
+
+                startActivity(userDetailIntent);
+                overridePendingTransition(0, 0);
             }
         }, 200);
     }

@@ -47,7 +47,7 @@ public class FirebaseUtil {
         return getBaseRef().child("resquest_friend");
     }
 
-    public static DatabaseReference getRestaurentRef() {
+    public static DatabaseReference getRestaurantRef() {
         return getBaseRef().child("restaurant");
     }
 
@@ -58,10 +58,8 @@ public class FirebaseUtil {
     public static DatabaseReference getAddressRef() {
         return getBaseRef().child("address");
     }
-//
-//    public static DatabaseReference getLikesRef() {
-//        return getBaseRef().child("likes");
-//    }
-//
 
+    public static DatabaseReference getLikesRef() {
+        return getBaseRef().child("likes");
+    }
 }

@@ -24,6 +24,7 @@ import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.base.BaseFragment;
 import ptit.nttrung.finalproject.model.entity.User;
 import ptit.nttrung.finalproject.ui.friend.friend_frag.FriendsFragment;
+import ptit.nttrung.finalproject.ui.user_detail.UserDetailActivity;
 
 public class RequestFriendFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, FriendRequestView {
 
@@ -68,9 +69,9 @@ public class RequestFriendFragment extends BaseFragment implements SwipeRefreshL
 
             @Override
             public void onImageClick(int position) {
-//                Intent userDetailIntent = new Intent(context, UserDetailActivity.class);
-//                userDetailIntent.putExtra(UserDetailActivity.USER_ID_EXTRA_NAME, idFriendRq);
-//                context.startActivity(userDetailIntent);
+                Intent userDetailIntent = new Intent(getContext(), UserDetailActivity.class);
+                userDetailIntent.putExtra(UserDetailActivity.USER_ID_EXTRA_NAME, friends.get(position).uid);
+                getContext().startActivity(userDetailIntent);
             }
         });
         rvFriendRequest.setAdapter(adapter);

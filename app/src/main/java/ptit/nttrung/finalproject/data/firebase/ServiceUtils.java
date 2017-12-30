@@ -11,6 +11,7 @@ import android.os.IBinder;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -114,7 +115,7 @@ public class ServiceUtils {
             String uid = SharedPreferenceHelper.getInstance(context).getUID();
             if (!uid.equals("")) {
                 FirebaseDatabase.getInstance().getReference().child("user/" + uid + "/status/isOnline").setValue(true);
-                FirebaseDatabase.getInstance().getReference().child("user/" + uid + "/status/timestamp").setValue(System.currentTimeMillis());
+                FirebaseDatabase.getInstance().getReference().child("user/" + uid + "/status/timestamp").setValue(ServerValue.TIMESTAMP);
             }
         }
     }
