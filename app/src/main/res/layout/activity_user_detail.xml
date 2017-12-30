@@ -136,7 +136,7 @@
                             android:layout_marginRight="24dp"
                             android:layout_marginTop="8dp"
                             android:background="@drawable/btn_following"
-                            android:text="Add friend"
+                            android:text="Kết bạn"
                             android:textColor="#ffffff"
                             android:textSize="12sp" />
 

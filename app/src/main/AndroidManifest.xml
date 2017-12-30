@@ -24,13 +24,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_map_api_key" />
 
-        <activity android:name=".ui.login.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
+        <activity android:name=".ui.login.LoginActivity" />
         <activity android:name=".ui.main.MainActivity" />
         <activity android:name=".ui.friend.FriendActivity" />
         <activity android:name=".ui.chat.ChatActivity" />
@@ -44,6 +38,15 @@
         <activity android:name=".ui.restaurant_detail.RestaurantDetailActivity" />
         <activity android:name=".ui.user_detail.UserDetailActivity" />
         <activity android:name=".ui.setting.SettingActivity" />
+        <activity android:name=".ui.comment.CommentActivity" />
+        <activity android:name=".ui.comment.ReviewActivity" />
+
+        <activity android:name=".ui.splash.SplashScreenActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".data.firebase.FriendChatService"

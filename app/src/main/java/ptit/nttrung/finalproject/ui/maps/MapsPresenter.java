@@ -15,10 +15,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by TrungNguyen on 12/28/2017.
- */
-
 public class MapsPresenter extends Presenter<MapsView> {
 
     public MapsPresenter() {

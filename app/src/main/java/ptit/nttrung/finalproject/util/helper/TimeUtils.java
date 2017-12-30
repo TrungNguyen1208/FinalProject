@@ -61,7 +61,7 @@ public class TimeUtils {
 
     public static boolean betweenTo2Time(String timeStart, String timeEnd) {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
 
         Date now = calendar.getTime();
         try {

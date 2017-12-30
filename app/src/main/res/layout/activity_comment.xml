@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="contentDescription">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <TextView
+                android:id="@+id/txt_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="5dp"
+                android:padding="5dp"
+                android:text="Đăng"
+                android:textColor="@color/colorWhite"
+                android:textSize="18sp" />
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:id="@+id/ll_restaurent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_gray"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/txt_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ding tea"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txt_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="23 Cầu Giấy"
+                android:textColor="@color/colorBlack" />
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/edt_title_cmt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_restaurent"
+            android:layout_marginTop="5dp"
+            android:hint="Tiêu đề (không bắt buộc)"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:id="@+id/ll_user_click_cmt"
+            android:layout_width="match_parent"
+            android:layout_height="50.0dip"
+            android:layout_alignParentBottom="true"
+            android:background="#ffdedede"
+            android:orientation="horizontal"
+            android:layout_marginRight="5dp"
+            android:padding="5dp">
+
+            <FrameLayout
+                android:id="@+id/frame_layout_add_image"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:clickable="true"
+                android:minWidth="50.0dip">
+
+                <ImageView
+                    android:id="@+id/iv_add_image_res"
+                    android:layout_width="25.0dip"
+                    android:layout_height="25.0dip"
+                    android:layout_gravity="center"
+                    android:src="@drawable/icon_add_image" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/frame_layout_take_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_toRightOf="@id/frame_layout_add_image"
+                android:clickable="true"
+                android:minWidth="50.0dip">
+
+                <ImageView
+                    android:id="@+id/iv_take_photo"
+                    android:layout_width="25.0dip"
+                    android:layout_height="25.0dip"
+                    android:layout_gravity="center"
+                    android:src="@drawable/icon_take_photo" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/frame_layout_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_toRightOf="@id/frame_layout_add_image"
+                android:clickable="true"
+                android:minWidth="50.0dip">
+
+                <ImageView
+                    android:layout_width="25.0dip"
+                    android:layout_height="25.0dip"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_rate" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/edt_content_cmt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/ll_user_click_cmt"
+            android:layout_below="@+id/edt_title_cmt"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/transparent"
+            android:gravity="top"
+            android:hint="Nội dung"
+            android:padding="5dp"
+            android:textSize="15sp" />
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

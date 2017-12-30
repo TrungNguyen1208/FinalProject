@@ -1,6 +1,7 @@
 package ptit.nttrung.finalproject.ui.main.newfeed;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +25,7 @@ import ptit.nttrung.finalproject.base.BaseFragment;
 import ptit.nttrung.finalproject.data.firebase.FirebaseUtil;
 import ptit.nttrung.finalproject.model.entity.Restaurant;
 import ptit.nttrung.finalproject.ui.main.RestaurantViewHolder;
+import ptit.nttrung.finalproject.ui.restaurant_detail.RestaurantDetailActivity;
 
 /**
  * Created by TrungNguyen on 12/29/2017.
@@ -158,6 +160,15 @@ public class NewfeedFragment extends BaseFragment {
                 public void toggleLike() {
                     Log.d(TAG, "Like position: " + position);
                     mListener.onPostLike(postKey);
+                }
+
+                @Override
+                public void showDetail() {
+                    Intent intent = new Intent(getActivity(), RestaurantDetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("restaurant", restaurant);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
             });
         }

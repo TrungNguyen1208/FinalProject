@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
@@ -29,9 +30,10 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
     TextView tvDistanceItemPlace;
     @BindView(R.id.iv_item_place)
     ImageView mPhotoView;
+    @BindView(R.id.contentFrame)
+    LinearLayout contentFrame;
 
     public ValueEventListener mLikeListener;
-
     public enum LikeStatus {LIKED, NOT_LIKED}
 
     private PostClickListener mListener;
@@ -60,6 +62,13 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 mListener.toggleLike();
+            }
+        });
+
+        contentFrame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.showDetail();
             }
         });
     }
@@ -110,5 +119,7 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
         void showComments();
 
         void toggleLike();
+
+        void showDetail();
     }
 }

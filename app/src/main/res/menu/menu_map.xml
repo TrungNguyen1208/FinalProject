@@ -5,6 +5,6 @@
     <item
         android:id="@+id/menu_show_map"
         android:orderInCategory="100"
-        android:title="Show Google Map"
+        android:title="Hiển thị chi tiết"
         app:showAsAction="never" />
 </menu>

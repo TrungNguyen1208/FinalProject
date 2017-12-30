@@ -56,7 +56,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback,
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Map");
+        getSupportActionBar().setTitle("Chỉ đường");
 
         presenter.attachView(this);
 

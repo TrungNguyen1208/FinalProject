@@ -16,79 +16,87 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/contentFrame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="5dp">
-
-            <TextView
-                android:id="@+id/tv_rate_item_place"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/custom_tv_circle"
-                android:gravity="center"
-                android:text="6.8"
-                android:textColor="@color/colorWhite" />
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="9"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:padding="5dp">
 
                 <TextView
-                    android:id="@+id/tv_name_item_place"
-                    android:layout_width="match_parent"
+                    android:id="@+id/tv_rate_item_place"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/custom_tv_circle"
+                    android:gravity="center"
+                    android:text="6.8"
+                    android:textColor="@color/colorWhite" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Gogi House"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:layout_margin="5dp"
+                    android:layout_weight="9"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_name_item_place"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Gogi House"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_address_item_place"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="36 Den Hung" />
+
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tv_address_item_place"
-                    android:layout_width="match_parent"
+                    android:id="@+id/tv_distance_item_place"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="36 Den Hung" />
-
+                    android:maxLines="1"
+                    android:text="6.45 km"
+                    android:textColor="@color/colorBlack" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_distance_item_place"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="6.45 km"
-                android:textColor="@color/colorBlack" />
+            <RelativeLayout
+                android:id="@+id/vImageRoot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv_item_place"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/hinh_quan_an"
+                    android:visibility="visible" />
+
+                <ProgressBar
+                    android:id="@+id/pbImageLoading"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/progress_bg"
+                    android:indeterminate="true"
+                    android:indeterminateDrawable="@drawable/progress"
+                    android:progressDrawable="@drawable/progress"
+                    android:visibility="visible" />
+
+            </RelativeLayout>
+
         </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/vImageRoot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/iv_item_place"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/hinh_quan_an"
-                android:visibility="visible" />
-
-            <ProgressBar
-                android:id="@+id/pbImageLoading"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/progress_bg"
-                android:layout_centerInParent="true"
-                android:visibility="visible"
-                android:indeterminate="true"
-                android:indeterminateDrawable="@drawable/progress"
-                android:progressDrawable="@drawable/progress" />
-
-        </RelativeLayout>
 
         <Button
             android:id="@+id/btn_book_item_place"
@@ -104,10 +112,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="8dp"
             android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:paddingRight="8dp">
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="5dp">
 
             <ImageButton
                 android:id="@+id/btnLike"

@@ -31,8 +31,8 @@
     <color name="grey_100">#F5F5F5</color>
     <color name="grey_800">#212121</color>
 
-    <color name="btn_send_normal">#02c754</color>
-    <color name="btn_send_pressed">#006633</color>
+    <color name="btn_send_normal">#5C6BC0</color>
+    <color name="btn_send_pressed">#303F9F</color>
 
     <color name="blue_grey_500">#607D8B</color>
 

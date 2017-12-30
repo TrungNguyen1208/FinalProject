@@ -3,6 +3,8 @@ package ptit.nttrung.finalproject.data.local;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import ptit.nttrung.finalproject.model.entity.User;
 
 public class SharedPreferenceHelper {
@@ -17,7 +19,8 @@ public class SharedPreferenceHelper {
     private static String SHARE_KEY_UID = "uid";
 
 
-    private SharedPreferenceHelper() {}
+    private SharedPreferenceHelper() {
+    }
 
     public static SharedPreferenceHelper getInstance(Context context) {
         if (instance == null) {
@@ -36,7 +39,7 @@ public class SharedPreferenceHelper {
         editor.commit();
     }
 
-    public User getUserInfo(){
+    public User getUserInfo() {
         String userName = preferences.getString(SHARE_KEY_NAME, "");
         String email = preferences.getString(SHARE_KEY_EMAIL, "");
         String avatar = preferences.getString(SHARE_KEY_AVATA, "default");
@@ -50,8 +53,29 @@ public class SharedPreferenceHelper {
         return user;
     }
 
-    public String getUID(){
+    public String getUID() {
         return preferences.getString(SHARE_KEY_UID, "");
     }
 
+    public void saveDouble(String key, double value) {
+        String dValue = String.valueOf(value);
+        editor.putString(key, dValue);
+        editor.commit();
+    }
+
+    public double getDouble(String key, double defVa) {
+        String strDefVa = String.valueOf(defVa);
+        String dValue = preferences.getString(key, strDefVa);
+        return (dValue.equals(strDefVa)) ? defVa : Double
+                .valueOf(dValue);
+    }
+
+    public void saveCurrentLocation(LatLng latLng) {
+        saveDouble("current_location_lat", latLng.latitude);
+        saveDouble("current_location_lng", latLng.longitude);
+    }
+
+    public LatLng getCurrentLocation() {
+        return new LatLng(getDouble("current_location_lat", 21.0277644), getDouble("current_location_lng", 105.8341598));
+    }
 }
