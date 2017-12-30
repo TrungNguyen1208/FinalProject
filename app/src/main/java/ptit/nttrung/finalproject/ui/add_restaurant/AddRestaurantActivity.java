@@ -2,7 +2,9 @@ package ptit.nttrung.finalproject.ui.add_restaurant;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -12,15 +14,28 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.base.BaseActivity;
+import ptit.nttrung.finalproject.data.firebase.FirebaseUtil;
+import ptit.nttrung.finalproject.model.entity.Restaurant;
 import ptit.nttrung.finalproject.ui.gallery.file.ImageGalleryBean;
 import ptit.nttrung.finalproject.ui.gallery.folder.GalleryFolderActivity;
 import ptit.nttrung.finalproject.util.helper.TimeUtils;
@@ -107,7 +122,6 @@ public class AddRestaurantActivity extends BaseActivity implements AddView {
                 }, hour, minutes, true).show();
                 break;
             case R.id.linear_layout_choose_type_res:
-//                showDialogChooseType();
                 break;
             case R.id.iv_add_image_res:
                 Intent intent = new Intent(this, GalleryFolderActivity.class);
@@ -120,7 +134,62 @@ public class AddRestaurantActivity extends BaseActivity implements AddView {
     }
 
     public void uploadRestaurant() {
+        final Restaurant restaurant = new Restaurant();
+        restaurant.name = (etNameRes.getText().toString());
+        restaurant.maxCost = (etMaxCash.getText().toString());
+        restaurant.minCost = (etMinCash.getText().toString());
+        restaurant.desciption = (etDescription.getText().toString());
+        restaurant.openTime = (tvOpenTime.getText().toString());
+        restaurant.closeTime = (tvCloseTime.getText().toString());
+        restaurant.timestamp = (System.currentTimeMillis());
+        restaurant.address = etAddressRes.getText().toString();
+        restaurant.latitude = selectedLat;
+        restaurant.longitude = selectedLng;
 
+        List<Uri> uriList = new ArrayList<>();
+        final List<String> images = new ArrayList<>();
+
+        if (imageGalleryBeen != null) {
+            for (int i = 0; i < imageGalleryBeen.size(); i++) {
+                Uri file = Uri.fromFile(new File(imageGalleryBeen.get(i).getPath()));
+                uriList.add(file);
+            }
+        }
+        Long timestamp = System.currentTimeMillis();
+        FirebaseStorage storageRef = FirebaseStorage.getInstance();
+
+        for (Uri uri : uriList) {
+            StorageReference riversRef = storageRef.getReference().child(uri.getLastPathSegment() + timestamp.toString());
+            riversRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    final Uri fullSizeUrl = taskSnapshot.getDownloadUrl();
+                    images.add(fullSizeUrl.toString());
+
+                    restaurant.images = images;
+                    DatabaseReference restauRef = FirebaseUtil.getRestaurantRef();
+                    final String newPostKey = restauRef.push().getKey();
+                    restaurant.resId = (newPostKey);
+
+                    restauRef.child(newPostKey).setValue(restaurant).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            makeToastSucces("Đăng quán ăn thành công");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            makeToastError("Có lỗi xảy ra");
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    makeToastError("Có lỗi xảy ra");
+                }
+            });
+        }
     }
 
     @Override
