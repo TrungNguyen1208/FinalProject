@@ -8,9 +8,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import ptit.nttrung.finalproject.base.Presenter;
 import ptit.nttrung.finalproject.model.entity.Message;
 
-/**
- * Created by TrungNguyen on 12/29/2017.
- */
 
 public class ChatPresenter extends Presenter<ChatView> {
 

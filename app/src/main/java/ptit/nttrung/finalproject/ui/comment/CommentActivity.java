@@ -27,6 +27,9 @@ import ptit.nttrung.finalproject.model.entity.Comment;
 
 public class CommentActivity extends BaseActivity {
 
+    public static final String ACTION_SEND_CMT = "ACTION_COMMENT";
+    public static final String KEY_CMT = "KEY_CMT";
+
     @BindView(R.id.edt_title_cmt)
     EditText edtTitleCmt;
     @BindView(R.id.edt_content_cmt)
@@ -52,7 +55,7 @@ public class CommentActivity extends BaseActivity {
         ab.setDisplayShowHomeEnabled(true);
         ab.setTitle("Đăng bình luận");
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         final String idRes = intent.getStringExtra("idRes");
         String resName = intent.getStringExtra("name");
         String resAddress = intent.getStringExtra("address");
@@ -95,9 +98,10 @@ public class CommentActivity extends BaseActivity {
                         public void onSuccess(Void aVoid) {
                             makeToastSucces("Đăng bình luận thành công");
 
-                            Intent intent2 = new Intent("ACTION_COMMENT");
+                            Intent intent2 = new Intent(CommentActivity.ACTION_SEND_CMT);
                             Bundle bundle = new Bundle();
-                            bundle.putParcelable("comment", comment);
+                            bundle.putParcelable(CommentActivity.KEY_CMT, comment);
+                            intent2.putExtras(bundle);
                             CommentActivity.this.sendBroadcast(intent2);
                         }
                     }).addOnFailureListener(new OnFailureListener() {

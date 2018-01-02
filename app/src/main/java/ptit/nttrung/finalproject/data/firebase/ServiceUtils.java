@@ -123,7 +123,7 @@ public class ServiceUtils {
     public static void updateFriendStatus(Context context, ListFriend listFriend) {
         if (isNetworkConnected(context)) {
             for (Friend friend : listFriend.getListFriend()) {
-                final String fid = friend.id;
+                final String fid = friend.uid;
                 FirebaseDatabase.getInstance().getReference().child("user/" + fid + "/status").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

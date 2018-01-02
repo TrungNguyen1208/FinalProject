@@ -50,10 +50,10 @@ import ptit.nttrung.finalproject.util.widget.RecyclerItemClickListener;
 public class ProfileFragment extends BaseFragment implements ProfileView {
     private static final String TAG = ProfileFragment.class.getName();
 
-    private static final String USERNAME_LABEL = "Username";
+    private static final String USERNAME_LABEL = "Tên";
     private static final String EMAIL_LABEL = "Email";
-    private static final String SIGNOUT_LABEL = "Sign out";
-    private static final String RESETPASS_LABEL = "Change Password";
+    private static final String SIGNOUT_LABEL = "Đăng xuất";
+    private static final String RESETPASS_LABEL = "Đổi mật khẩu";
 
     private static final int PICK_IMAGE = 1994;
 

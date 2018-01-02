@@ -3,9 +3,10 @@ package ptit.nttrung.finalproject.model.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Comment implements Parcelable {
+public class Comment implements Parcelable, Serializable {
     public String commentId;
     public String resId;
     public String uId;
@@ -18,6 +19,7 @@ public class Comment implements Parcelable {
     public Comment() {
         this.survey = new Survey();
     }
+
 
     @Override
     public int describeContents() {

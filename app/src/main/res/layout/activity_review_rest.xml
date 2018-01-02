@@ -76,6 +76,14 @@
         android:padding="5dp">
 
         <TextView
+            android:id="@+id/point_vitri"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="5"
+            android:textSize="18sp" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -87,6 +95,8 @@
             android:id="@+id/vitri"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/point_vitri"
             app:dsb_max="10"
             app:dsb_min="1"
             app:dsb_value="5" />
@@ -101,10 +111,20 @@
         android:gravity="center_vertical"
         android:padding="5dp">
 
+        <TextView
+            android:id="@+id/point_giaca"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="5"
+            android:textSize="18sp" />
+
         <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
             android:id="@+id/giaca"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/point_giaca"
             app:dsb_max="10"
             app:dsb_min="1"
             app:dsb_value="5" />
@@ -126,10 +146,22 @@
         android:gravity="center_vertical"
         android:padding="5dp">
 
+        <TextView
+            android:id="@+id/point_chatluong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/giaca"
+            android:text="5"
+            android:textSize="18sp" />
+
         <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
             android:id="@+id/chatluong"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/point_chatluong"
             app:dsb_max="10"
             app:dsb_min="1"
             app:dsb_value="5" />
@@ -151,10 +183,20 @@
         android:gravity="center_vertical"
         android:padding="5dp">
 
+        <TextView
+            android:id="@+id/point_dichvu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="5"
+            android:textSize="18sp" />
+
         <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
             android:id="@+id/dichvu"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/point_dichvu"
             app:dsb_max="10"
             app:dsb_min="1"
             app:dsb_value="5" />
@@ -176,10 +218,21 @@
         android:gravity="center_vertical"
         android:padding="5dp">
 
+        <TextView
+            android:id="@+id/point_khonggian"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="5"
+            android:textSize="18sp" />
+
+
         <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
             android:id="@+id/khonggian"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/point_khonggian"
             app:dsb_max="10"
             app:dsb_min="1"
             app:dsb_value="5" />
@@ -202,5 +255,12 @@
         android:text="Không bắt buộc"
         android:textColor="#ff888888"
         android:textSize="20sp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Có Quay Trở Lại Không?"
+        android:textColor="@color/colorAccent"
+        android:textSize="15sp" />
 
 </LinearLayout>

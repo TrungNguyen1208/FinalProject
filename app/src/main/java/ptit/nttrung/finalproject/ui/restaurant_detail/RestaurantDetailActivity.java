@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -145,7 +144,6 @@ public class RestaurantDetailActivity extends BaseActivity implements OnMapReady
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            // User already liked this post, so we toggle like off.
                             postLikesRef.child(restaurant.resId).child(userKey).removeValue();
                         } else {
                             postLikesRef.child(restaurant.resId).child(userKey).setValue(ServerValue.TIMESTAMP);
@@ -160,7 +158,7 @@ public class RestaurantDetailActivity extends BaseActivity implements OnMapReady
             }
         });
 
-        ValueEventListener likeListener = new ValueEventListener() {
+        FirebaseUtil.getLikesRef().child(restaurant.resId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (RestaurantDetailActivity.this != null) {
@@ -172,8 +170,7 @@ public class RestaurantDetailActivity extends BaseActivity implements OnMapReady
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        };
-        FirebaseUtil.getLikesRef().child(restaurant.resId).addValueEventListener(likeListener);
+        });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
@@ -187,7 +184,6 @@ public class RestaurantDetailActivity extends BaseActivity implements OnMapReady
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot dataValue : dataSnapshot.getChildren()) {
                     Comment comment = dataValue.getValue(Comment.class);
-                    Log.e("comment", comment.text);
                     comments.add(comment);
                 }
                 adapter.notifyDataSetChanged();
@@ -202,13 +198,17 @@ public class RestaurantDetailActivity extends BaseActivity implements OnMapReady
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Comment comment = intent.getExtras().getParcelable("comment");
-                comments.add(comment);
-                adapter.notifyDataSetChanged();
+                if (intent.getAction().equals(CommentActivity.ACTION_SEND_CMT)) {
+                    Comment comment = (Comment) intent.getExtras().getParcelable(CommentActivity.KEY_CMT);
+                    if (comment != null) {
+                        comments.add(comment);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
             }
         };
 
-        IntentFilter intentFilter = new IntentFilter("ACTION_COMMENT");
+        IntentFilter intentFilter = new IntentFilter(CommentActivity.ACTION_SEND_CMT);
         registerReceiver(receiver, intentFilter);
     }
 

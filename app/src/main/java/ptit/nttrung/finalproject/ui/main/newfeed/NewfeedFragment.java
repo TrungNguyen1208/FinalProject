@@ -138,6 +138,7 @@ public class NewfeedFragment extends BaseFragment {
             } else {
                 postKey = inPostKey;
             }
+            postViewHolder.setRateRestaurant(postKey);
 
             ValueEventListener likeListener = new ValueEventListener() {
                 @Override

@@ -96,7 +96,6 @@ public class FriendsFragment extends BaseFragment implements SwipeRefreshLayout.
         }
 
         View layout = inflater.inflate(R.layout.fragment_friends, container, false);
-
         tvNoFriend = (TextView) layout.findViewById(R.id.tv_no_friend);
         tvNoFriend.setVisibility(View.GONE);
 

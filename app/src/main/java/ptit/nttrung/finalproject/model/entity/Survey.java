@@ -4,7 +4,9 @@ package ptit.nttrung.finalproject.model.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Survey implements Parcelable {
+import java.io.Serializable;
+
+public class Survey implements Parcelable, Serializable {
     public int vitri;
     public int giaca;
     public int chatluong;

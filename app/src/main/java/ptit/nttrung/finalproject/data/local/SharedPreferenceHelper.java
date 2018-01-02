@@ -54,7 +54,7 @@ public class SharedPreferenceHelper {
     }
 
     public String getUID() {
-        return preferences.getString(SHARE_KEY_UID, "");
+        return preferences.getString(SHARE_KEY_UID, StaticConfig.UID);
     }
 
     public void saveDouble(String key, double value) {

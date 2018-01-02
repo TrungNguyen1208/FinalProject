@@ -2,6 +2,7 @@ package ptit.nttrung.finalproject.ui.main.nearby;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -68,8 +70,7 @@ public class NearbyFragment extends BaseFragment {
             mRecyclerView.scrollToPosition(mRecyclerViewPosition);
         }
 
-        Query allPostsQuery = FirebaseUtil.getRestaurantRef().limitToLast(2);
-
+        Query allPostsQuery = FirebaseUtil.getRestaurantRef();
         mAdapter = getFirebaseRecyclerAdapter(allPostsQuery);
 
         mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -100,7 +101,7 @@ public class NearbyFragment extends BaseFragment {
     }
 
     private void setupPost(final RestaurantViewHolder postViewHolder, final Restaurant restaurant, final int position, final String inPostKey) {
-        if (restaurant != null) {
+        if (restaurant != null && getDistanceRestaurant(restaurant.latitude, restaurant.longitude, SharedPreferenceHelper.getInstance(getContext()).getCurrentLocation()) < 7) {
             postViewHolder.setPhoto(restaurant.images.get(0));
             postViewHolder.setAddresss(restaurant.address);
             postViewHolder.setNameRestaurant(restaurant.name);
@@ -112,7 +113,7 @@ public class NearbyFragment extends BaseFragment {
             } else {
                 postKey = inPostKey;
             }
-
+            postViewHolder.setRateRestaurant(postKey);
             ValueEventListener likeListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -155,6 +156,8 @@ public class NearbyFragment extends BaseFragment {
                     startActivity(intent);
                 }
             });
+        } else {
+            postViewHolder.hide();
         }
     }
 
@@ -204,5 +207,18 @@ public class NearbyFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public double getDistanceRestaurant(double lat, double lng, LatLng latLng) {
+        Location locBrachRestaunt = new Location("");
+        locBrachRestaunt.setLatitude(lat);
+        locBrachRestaunt.setLongitude(lng);
+
+        Location currentLoc = new Location("");
+        currentLoc.setLatitude(latLng.latitude);
+        currentLoc.setLongitude(latLng.longitude);
+
+        double distance = currentLoc.distanceTo(locBrachRestaunt) / 1000;
+        return distance;
     }
 }

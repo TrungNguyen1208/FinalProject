@@ -29,6 +29,16 @@ public class ReviewActivity extends BaseActivity implements View.OnClickListener
     DiscreteSeekBar dichvu;
     @BindView(R.id.khonggian)
     DiscreteSeekBar khonggian;
+    @BindView(R.id.point_vitri)
+    TextView pointVitri;
+    @BindView(R.id.point_giaca)
+    TextView pointGiaca;
+    @BindView(R.id.point_chatluong)
+    TextView pointChatluong;
+    @BindView(R.id.point_dichvu)
+    TextView pointDichvu;
+    @BindView(R.id.point_khonggian)
+    TextView pointKhonggian;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,6 +51,12 @@ public class ReviewActivity extends BaseActivity implements View.OnClickListener
 
         back_button_gallery.setOnClickListener(this);
         text_view_done.setOnClickListener(this);
+
+        setupChangeProgressSeekBar(pointGiaca, giaca);
+        setupChangeProgressSeekBar(pointChatluong, chatluong);
+        setupChangeProgressSeekBar(pointDichvu, dichvu);
+        setupChangeProgressSeekBar(pointKhonggian, khonggian);
+        setupChangeProgressSeekBar(pointVitri, vitri);
     }
 
     public void sendData() {
@@ -65,5 +81,24 @@ public class ReviewActivity extends BaseActivity implements View.OnClickListener
                 finish();
                 break;
         }
+    }
+
+    private void setupChangeProgressSeekBar(final TextView textView, DiscreteSeekBar seekBar1) {
+        seekBar1.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+            @Override
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+                textView.setText(String.valueOf(value));
+            }
+
+            @Override
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+        });
     }
 }

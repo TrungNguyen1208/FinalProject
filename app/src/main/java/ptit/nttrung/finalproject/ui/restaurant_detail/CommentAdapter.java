@@ -1,6 +1,7 @@
 package ptit.nttrung.finalproject.ui.restaurant_detail;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import ptit.nttrung.finalproject.R;
 import ptit.nttrung.finalproject.data.firebase.FirebaseUtil;
 import ptit.nttrung.finalproject.model.entity.Comment;
+import ptit.nttrung.finalproject.ui.user_detail.UserDetailActivity;
 import ptit.nttrung.finalproject.util.helper.ImageUtils;
 
 
@@ -44,7 +46,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Comment comment = commentList.get(position);
+        final Comment comment = commentList.get(position);
         holder.tvContentCmtItem.setText(comment.text);
         holder.tvTitleCmtItem.setText(comment.title);
         holder.tvPointCmtItem.setText(String.valueOf(comment.survey.dtb));
@@ -59,6 +61,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+
+        holder.ivAvatarCmtItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (comment.uId != null) {
+                    Intent userDetailIntent = new Intent(mContext, UserDetailActivity.class);
+                    userDetailIntent.putExtra(UserDetailActivity.USER_ID_EXTRA_NAME, comment.uId);
+                    mContext.startActivity(userDetailIntent);
+                }
             }
         });
     }
