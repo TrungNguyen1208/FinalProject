@@ -8,6 +8,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import ptit.nttrung.finalproject.base.Presenter;
 import ptit.nttrung.finalproject.data.firebase.FirebaseUtil;
+import ptit.nttrung.finalproject.model.entity.Restaurant;
 
 public class MainPresenter extends Presenter<MainView> {
 
@@ -43,5 +44,24 @@ public class MainPresenter extends Presenter<MainView> {
                 getView().makeToastSucces("Có lỗi xảy ra!");
             }
         });
+    }
+
+    public Restaurant[] getRestaurant(String restaurantId) {
+        final Restaurant[] restaurant = {null};
+        final String userKey = FirebaseUtil.getCurrentUserId();
+        final DatabaseReference postLikesRef = FirebaseUtil.getLikesRef();
+        FirebaseUtil.getRestaurantRef().child(restaurantId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                restaurant[0] = dataSnapshot.getValue(Restaurant.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        return restaurant;
     }
 }

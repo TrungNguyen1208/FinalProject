@@ -113,14 +113,12 @@ public class NewfeedFragment extends BaseFragment {
             @Override
             public void populateViewHolder(final RestaurantViewHolder viewHolder,
                                            final Restaurant post, final int position) {
-                Log.e("restaurant", post.name + " " + post.address);
                 setupPost(viewHolder, post, position, null);
             }
 
             @Override
             public void onViewRecycled(RestaurantViewHolder holder) {
                 super.onViewRecycled(holder);
-//                FirebaseUtil.getLikesRef().child(holder.mPostKey).removeEventListener(holder.mLikeListener);
             }
         };
     }

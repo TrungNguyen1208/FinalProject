@@ -6,6 +6,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 
 import ptit.nttrung.finalproject.base.Presenter;
+import ptit.nttrung.finalproject.data.firebase.FirebaseUtil;
 import ptit.nttrung.finalproject.model.entity.Message;
 
 
@@ -25,7 +26,7 @@ public class ChatPresenter extends Presenter<ChatView> {
     }
 
     public void getListMesseage(String roomId) {
-        FirebaseDatabase.getInstance().getReference().child("message/" + roomId).addChildEventListener(new ChildEventListener() {
+        FirebaseUtil.getBaseRef().child("message/" + roomId).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.getValue() != null) {

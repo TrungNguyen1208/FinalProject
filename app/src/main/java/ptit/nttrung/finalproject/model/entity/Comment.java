@@ -20,7 +20,6 @@ public class Comment implements Parcelable, Serializable {
         this.survey = new Survey();
     }
 
-
     @Override
     public int describeContents() {
         return 0;

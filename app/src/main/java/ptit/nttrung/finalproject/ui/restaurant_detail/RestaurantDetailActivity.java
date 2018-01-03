@@ -69,6 +69,8 @@ public class RestaurantDetailActivity extends BaseActivity implements OnMapReady
     Button btnSave;
     @BindView(R.id.btnShare)
     Button btnShare;
+    @BindView(R.id.text_view_num_of_comment)
+    TextView totalCmt;
     @BindView(R.id.totalLike)
     TextView totalLike;
     @BindView(R.id.rv_list_cmt)
@@ -207,6 +209,20 @@ public class RestaurantDetailActivity extends BaseActivity implements OnMapReady
                 }
             }
         };
+
+        FirebaseUtil.getCommentRef().child(restaurant.resId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (RestaurantDetailActivity.this != null) {
+                    totalCmt.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         IntentFilter intentFilter = new IntentFilter(CommentActivity.ACTION_SEND_CMT);
         registerReceiver(receiver, intentFilter);
