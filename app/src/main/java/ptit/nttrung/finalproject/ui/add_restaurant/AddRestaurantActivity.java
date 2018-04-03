@@ -146,7 +146,7 @@ public class AddRestaurantActivity extends BaseActivity implements AddView {
         restaurant.latitude = selectedLat;
         restaurant.longitude = selectedLng;
 
-        List<Uri> uriList = new ArrayList<>();
+        final List<Uri> uriList = new ArrayList<>();
         final List<String> images = new ArrayList<>();
 
         if (imageGalleryBeen != null) {
@@ -157,31 +157,35 @@ public class AddRestaurantActivity extends BaseActivity implements AddView {
         }
         Long timestamp = System.currentTimeMillis();
         FirebaseStorage storageRef = FirebaseStorage.getInstance();
+        final int[] i = {0};
 
         for (Uri uri : uriList) {
             StorageReference riversRef = storageRef.getReference().child(uri.getLastPathSegment() + timestamp.toString());
             riversRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    i[0]++;
                     final Uri fullSizeUrl = taskSnapshot.getDownloadUrl();
                     images.add(fullSizeUrl.toString());
 
-                    restaurant.images = images;
-                    DatabaseReference restauRef = FirebaseUtil.getRestaurantRef();
-                    final String newPostKey = restauRef.push().getKey();
-                    restaurant.resId = (newPostKey);
+                    if (i[0] == uriList.size()) {
+                        restaurant.images = images;
+                        DatabaseReference restauRef = FirebaseUtil.getRestaurantRef();
+                        final String newPostKey = restauRef.push().getKey();
+                        restaurant.resId = (newPostKey);
 
-                    restauRef.child(newPostKey).setValue(restaurant).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            makeToastSucces("Đăng quán ăn thành công");
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            makeToastError("Có lỗi xảy ra");
-                        }
-                    });
+                        restauRef.child(newPostKey).setValue(restaurant).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                makeToastSucces("Đăng quán ăn thành công");
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                makeToastError("Có lỗi xảy ra");
+                            }
+                        });
+                    }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override

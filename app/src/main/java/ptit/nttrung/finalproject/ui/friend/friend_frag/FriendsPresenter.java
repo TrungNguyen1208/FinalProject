@@ -10,6 +10,7 @@ import com.google.firebase.database.ValueEventListener;
 import ptit.nttrung.finalproject.base.Presenter;
 import ptit.nttrung.finalproject.data.firebase.FirebaseUtil;
 import ptit.nttrung.finalproject.data.local.StaticConfig;
+import ptit.nttrung.finalproject.model.entity.User;
 
 public class FriendsPresenter extends Presenter<FriendsView> {
     private Context context;
@@ -64,6 +65,6 @@ public class FriendsPresenter extends Presenter<FriendsView> {
         });
     }
 
-    public void addFriend() {
+    public void addFriend(User friend) {
     }
 }

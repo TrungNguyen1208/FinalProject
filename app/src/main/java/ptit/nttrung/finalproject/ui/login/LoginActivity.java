@@ -104,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
             registerFragment = RegisterFragment.newInstance();
         }
         FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame_content, registerFragment, LOGIN_FRAGMENT)
+        transaction.replace(R.id.frame_content, registerFragment, REGISTER_FRAGMENT)
                 .addToBackStack(null)
                 .setCustomAnimations(R.anim.push_left_in, R.anim.push_left_out);
         transaction.commit();

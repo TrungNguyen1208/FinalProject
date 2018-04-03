@@ -27,4 +27,9 @@ public interface MapService {
                                     @Query("sensor") String bool,
                                     @Query("key") String key);
 
+    @GET("geocode/json?")
+    Call<GeoRoot> getLocationResults(@Query("address") String address,
+                                     @Query("key") String key);
+
+
 }
